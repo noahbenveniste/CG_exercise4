@@ -149,9 +149,9 @@ function drawPixel(imagedata,x,y,color) {
 /* application functions */
 
 // simple interpolate and draw with two edges
-// expects two left and right edge parameters, each an array of objects
+// expects two left and right edge parameters, each a two element array of objects
 // the first object in each edge is the upper endpoint, the second the lower
-// vertex objects have this structure: two [x:float,y:float,c:Color]
+// vertex objects have this structure: {x:float,y:float,c:Color}
 // assumes the range of y coordinates spanned by the edges is the same
 function twoEdgeInterp(imagedata,le,re) {
     
@@ -185,6 +185,27 @@ function twoEdgeInterp(imagedata,le,re) {
         rx += rxDelta; 
     } // end vertical
 } // end twoEdgeInterp
+
+// fills the passed convex polygon
+// expects an array of vertices, listed in clockwise order
+// vertex objects have this structure: {x:float,y:float,c:Color}
+function fillPoly(imagdata,vArray) {
+    
+    // compares the edges starting at v1 and v2
+    // an edge is formed by the passed and subsequent vertices (with wrapping)
+    // expects two vertex indices into vArray
+    function compareEdgeY(v1,v2) {
+        
+        var e1MinY = Math.min(vArray[v1].y,vArray[(v1+1)%vArray.length].y);
+        var e2MinY = Math.min(vArray[v2].y,vArray[(v2+1)%vArray.length].y);
+        
+        return(Math.sign(e1MinY-e2MinY));
+    } // end compareEdgeY
+    
+    // sort the edges in the polygon by their max y coordinate
+    var sortedVertIndices = vArray.keys.sort(compareEdgeY);
+    console.log(sortedVertIndices.toString());
+} // end fillPoly
     
 
 /* main -- here is where execution begins after window load */
@@ -199,9 +220,9 @@ function main() {
     var imagedata = context.createImageData(w,h);
  
     // Define and render a rectangle in 2D with colors and coords at corners
-    twoEdgeInterp(imagedata,
-        [{x:50,y:50,c:new Color(255,0,0,255)}, {x:100,y:150,c:new Color(0,0,255,255)}],
-        [{x:250,y:50,c:new Color(0,255,0,255)}, {x:200,y:150,c:new Color(0,0,0,255)}]);
+    fillPoly(imagedata,
+        [{x:50,y:50,c:new Color(255,0,0,255)}, {x:100,y:150,c:new Color(0,0,255,255)},
+         {x:250,y:50,c:new Color(0,255,0,255)}, {x:200,y:150,c:new Color(0,0,0,255)}]);
     
     context.putImageData(imagedata, 0, 0); // display the image in the context
 }
