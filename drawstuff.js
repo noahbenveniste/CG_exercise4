@@ -203,7 +203,7 @@ function fillPoly(imagdata,vArray) {
     } // end compareEdgeY
     
     // sort the edges in the polygon by their max y coordinate
-    var sortedVertIndices = vArray.keys.sort(compareEdgeY);
+    var sortedVertIndices = Object.keys(vArray).sort(compareEdgeY);
     console.log(sortedVertIndices.toString());
 } // end fillPoly
     
