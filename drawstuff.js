@@ -161,8 +161,8 @@ function twoEdgeInterp(imagedata,le,re) {
     var rc = re[0].c.clone();  // right color
     var lcDelta = le[1].c.clone().subtract(le[0].c).scale(vDelta); // left vertical color delta
     var rcDelta = re[1].c.clone().subtract(re[0].c).scale(vDelta); // right vertical color delta
-    var lx = le[0].x; // left x coord
-    var rx = re[0].x; // right x coord
+    var lx = Math.ceil(le[0].x); // left x coord
+    var rx = Math.floor(re[0].x); // right x coord
     var lxDelta = (le[1].x - le[0].x) * vDelta; // left vertical x delta
     var rxDelta = (re[1].x - re[0].x) * vDelta; // right vertical x delta
     
@@ -175,7 +175,7 @@ function twoEdgeInterp(imagedata,le,re) {
     for (var y=le[0].y; y<=le[1].y; y++) {
         hc.copy(lc); // begin with the left color
         hcDelta.copy(rc).subtract(lc).scale(hDelta); // reset horiz color delta
-        for (var x=lx; x<=rx; x++) {
+        for (var x=Math.ceil(lx); x<=rx; x++) {
             drawPixel(imagedata,x,y,hc);
             hc.add(hcDelta);
         } // end horizontal
