@@ -202,9 +202,14 @@ function fillPoly(imagdata,vArray) {
         return(Math.sign(e1MinY-e2MinY));
     } // end compareEdgeY
     
-    // sort the edges in the polygon by their max y coordinate
+    // sort the edges in the polygon by their min y coordinate
+    // then loop through edges, interpolating between current min two edges
+    // ignore any horizontal edges
     var sortedVertIndices = Object.keys(vArray).sort(compareEdgeY);
-    console.log(sortedVertIndices.toString());
+    var e1 = () ? 0 : 1; // first edge is first in list, unless it's horizontal
+    var e2 = () ? e1+1 : e1+2; // second edge is second in list, skipping horizontals
+    for (var e=1; e<sortedVertIndices.length; e++) {
+    } // end for each edge
 } // end fillPoly
     
 
