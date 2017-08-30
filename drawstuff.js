@@ -144,6 +144,47 @@ function drawPixel(imagedata,x,y,color) {
         console.log(e);
     }
 } // end drawPixel
+
+
+/* application functions */
+
+// simple interpolate and draw with two edges
+// expects two left and right edge parameters, each an array of objects
+// the first object in each edge is the upper endpoint, the second the lower
+// vertex objects have this structure: two [x:float,y:float,c:Color]
+// assumes the range of y coordinates spanned by the edges is the same
+function twoEdgeInterp(imagedata,le,re) {
+    
+    // set up the vertical interpolation
+    var vDelta = 1 / (le[1].y-le[0].y); // norm'd vertical delta
+    var lc = le[0].c.clone();  // left color
+    var rc = re[0].c.clone();  // right color
+    var lcDelta = le[1].c.clone().subtract(le[0].c).scale(vDelta); // left vertical color delta
+    var rcDelta = re[1].c.clone().subtract(re[0].c).scale(vDelta); // right vertical color delta
+    var lx = le[0].x; // left x coord
+    var rx = re[0].x; // right x coord
+    var lxDelta = (le[1].x - le[0].x) * vDelta; // left vertical x delta
+    var rxDelta = (re[1].x - re[0].x) * vDelta; // right vertical x delta
+    
+    // set up the horizontal interpolation
+    var hDelta = 1 / (re[0].x-le[0].x); // norm'd horizontal delta
+    var hc = new Color(); // horizontal color
+    var hcDelta = new Color(); // horizontal color delta
+    
+    // do the interpolation
+    for (var y=le[0].y; y<=le[1].y; y++) {
+        hc.copy(lc); // begin with the left color
+        hcDelta.copy(rc).subtract(lc).scale(hDelta); // reset horiz color delta
+        for (var x=lx; x<=rx; x++) {
+            drawPixel(imagedata,x,y,hc);
+            hc.add(hcDelta);
+        } // end horizontal
+        lc.add(lcDelta);
+        rc.add(rcDelta);
+        lx += lxDelta;
+        rx += rxDelta; 
+    } // end vertical
+} // end twoEdgeInterp
     
 
 /* main -- here is where execution begins after window load */
@@ -157,39 +198,10 @@ function main() {
     var h = context.canvas.height;  // as set in html
     var imagedata = context.createImageData(w,h);
  
-    // Define a rectangle in 2D with colors and coords at corners
-    var ulc = new Color(255,0,0,255); // upper left corner color: red
-    var urc = new Color(0,255,0,255); // upper right corner color: green
-    var llc = new Color(0,0,255,255); // lower left corner color: blue
-    var lrc = new Color(0,0,0,255); // lower right corner color: black
-    var ulx = 50, uly = 50; // upper left corner position
-    var urx = 200, ury = 50; // upper right corner position
-    var llx = 50, lly = 150; // lower left corner position
-    var lrx = 200, lry = 150; // lower right corner position
-    
-    // set up the vertical interpolation
-    var lc = ulc.clone();  // left color
-    var rc = urc.clone();  // right color
-    var vDelta = 1 / (lly-uly); // norm'd vertical delta
-    var lcDelta = llc.clone().subtract(ulc).scale(vDelta); // left vert color delta
-    var rcDelta = lrc.clone().subtract(urc).scale(vDelta); // right vert color delta
-    
-    // set up the horizontal interpolation
-    var hc = new Color(); // horizontal color
-    var hDelta = 1 / (urx-ulx); // norm'd horizontal delta
-    var hcDelta = new Color(); // horizontal color delta
-    
-    // do the interpolation
-    for (var y=uly; y<=lly; y++) {
-        hc.copy(lc); // begin with the left color
-        hcDelta.copy(rc).subtract(lc).scale(hDelta); // reset horiz color delta
-        for (var x=ulx; x<=urx; x++) {
-            drawPixel(imagedata,x,y,hc);
-            hc.add(hcDelta);
-        } // end horizontal
-        lc.add(lcDelta);
-        rc.add(rcDelta);
-    } // end vertical
+    // Define and render a rectangle in 2D with colors and coords at corners
+    twoEdgeInterp(imagedata,
+        [{x:50,y:50,c:new Color(255,0,0,255)}, {x:50,y:150,c:new Color(0,0,255,255)}],
+        [{x:200,y:50,c:new Color(0,255,0,255)}, {x:200,y:150,c:new Color(0,0,0,255)}]);
     
     context.putImageData(imagedata, 0, 0); // display the image in the context
 }
