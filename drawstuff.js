@@ -162,7 +162,7 @@ function twoEdgeInterp(imagedata,le,re) {
     var lcDelta = le[1].c.clone().subtract(le[0].c).scale(vDelta); // left vertical color delta
     var rcDelta = re[1].c.clone().subtract(re[0].c).scale(vDelta); // right vertical color delta
     var lx = Math.ceil(le[0].x); // left x coord
-    var rx = Math.floor(re[0].x); // right x coord
+    var rx = re[0].x; // right x coord
     var lxDelta = (le[1].x - le[0].x) * vDelta; // left vertical x delta
     var rxDelta = (re[1].x - re[0].x) * vDelta; // right vertical x delta
     
