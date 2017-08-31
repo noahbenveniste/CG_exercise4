@@ -205,11 +205,13 @@ function fillPoly(imagdata,vArray) {
     // sort the edges in the polygon by their min y coordinate
     // then loop through edges, interpolating between current min two edges
     // ignore any horizontal edges
-    var sortedVertIndices = Object.keys(vArray).sort(compareEdgeY);
-    var e1 = () ? 0 : 1; // first edge is first in list, unless it's horizontal
-    var e2 = () ? e1+1 : e1+2; // second edge is second in list, skipping horizontals
-    for (var e=1; e<sortedVertIndices.length; e++) {
-    } // end for each edge
+    var numVerts = vArray.length;
+    var sortedIndices = Object.keys(vArray).sort(compareEdgeY);
+    var e1 = (vArray[sortedIndices[0]].y !== vArray[sortedIndices[1]].y) ? 0 : 1;
+    var e2 = (vArray[sortedIndices[e1+1]].y !== vArray[sortedIndices[(e1+2)%numVerts]].y) ? e1+1 : (e1+2)%numVerts;
+    do {
+        
+    } while (e2 < numVerts); // end for each edge
 } // end fillPoly
     
 
