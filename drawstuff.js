@@ -153,8 +153,30 @@ function drawPixel(imagedata,x,y,color) {
 // the first object in each edge is the upper endpoint, the second the lower
 // vertex objects have this structure: {x:float,y:float,c:Color}
 // assumes the range of y coordinates spanned by the edges is the same
-function twoEdgeInterp(imagedata,le,re) {
+function twoEdgeInterp(imagedata,e1,e2) {
     
+    // determine left/right edge
+    if (Math.min(e1[0].x,e1[1].x) < Math.min(e2[0].x,e2.[1].x))
+        var le = e1, re = e2;
+    else
+        var le = e2, re = e1; 
+    
+    // ensure vertex with min y is first
+    le = (le[0].y < le[1].y) ? le : le.reverse(); 
+    re = (re[0].y < re[1].y) ? re : re.reverse(); 
+    
+    // handle interpolation of lines with different ranges in Y
+    var startYDiff = le[0].y - re[0].y;
+    if (startYDiff > 0) { // left edge has largest min Y
+        var startAtY = Math.ceil(le[0].y), lx = Math.ceil(le[0].x); 
+        var rx = re[0].x + (re[1].x-re[0].x) * startYDiff/(re[1].y - re[0].y);
+    } else { // right edge has largest min Y
+        var startAtY = Math.ceil(re[0].y), rx = re[0].x;
+        var lx = Match.ceil(le[0].x + (le[1].x-le[0].x) * startYDiff/(le[1].y - le[0].y));
+    } 
+    var startAt
+    var haltAtY = Math.min(le[1].y,re[1].y); // Y at which to stop interpolation
+
     // set up the vertical interpolation
     var vDelta = 1 / (le[1].y-le[0].y); // norm'd vertical delta
     var lc = le[0].c.clone();  // left color
@@ -194,7 +216,7 @@ function fillPoly(imagdata,vArray) {
     // compares the edges starting at v1 and v2
     // an edge is formed by the passed and subsequent vertices (with wrapping)
     // expects two vertex indices into vArray
-    function compareEdgeY(v1,v2) {
+    function compareYofEdges(v1,v2) {
         
         var e1MinY = Math.min(vArray[v1].y,vArray[(v1+1)%vArray.length].y);
         var e2MinY = Math.min(vArray[v2].y,vArray[(v2+1)%vArray.length].y);
@@ -202,15 +224,25 @@ function fillPoly(imagdata,vArray) {
         return(Math.sign(e1MinY-e2MinY));
     } // end compareEdgeY
     
-    // sort the edges in the polygon by their min y coordinate
-    // then loop through edges, interpolating between current min two edges
-    // ignore any horizontal edges
-    var numVerts = vArray.length;
-    var sortedIndices = Object.keys(vArray).sort(compareEdgeY);
-    var e1 = (vArray[sortedIndices[0]].y !== vArray[sortedIndices[1]].y) ? 0 : 1;
-    var e2 = (vArray[sortedIndices[e1+1]].y !== vArray[sortedIndices[(e1+2)%numVerts]].y) ? e1+1 : (e1+2)%numVerts;
-    do {
+    // true if the passed edge is horizontal
+    function edgeNotHorizontal(vtx,i,a) {
         
+        return(vArray[vtx].y != vArray[(vtx+1)%vArray.length].y);
+    } // end edgeHorizontal
+    
+    // sort the edges in the polygon by their min y coordinate
+    // then loop through edges, interpolating between current two min edges
+    // ignore any horizontal edges
+    var sortedEdges = Object.keys(vArray).sort(compareYofEdges); // sort edges by min y
+    var sortedNoHzEdges = sortedEdges.filter(edgeNotHorizontal); // remove all horizontal edges
+    var e1 = 0, e2 = 1; 
+    var e2 = (!edgeHorizontal[sortedIndices[e1+1])vArray[sortedIndices[(e1+2)%numVerts]].y) ? e1+1 : (e1+2)%numVerts;
+    var 
+    do { // while there are still edges to interpolate between        
+        // identify edge with lower max y
+        // interpolate between the edge with lower max y and other edge
+        // introduce next edge
+        // identify left and right edge
     } while (e2 < numVerts); // end for each edge
 } // end fillPoly
     
