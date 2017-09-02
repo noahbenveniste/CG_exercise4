@@ -148,14 +148,14 @@ function drawPixel(imagedata,x,y,color) {
 
 /* application functions */
 
-// simple interpolate and draw with two edges
+// interpolate and draw between two edges
+// draws only in the y range occupied by both edges
 // expects two left and right edge parameters, each a two element array of objects
 // the first object in each edge is the upper endpoint, the second the lower
 // vertex objects have this structure: {x:float,y:float,c:Color}
-// assumes the range of y coordinates spanned by the edges is the same
 function twoEdgeInterp(imagedata,e1,e2) {
     
-    // determine left/right edge
+    // determine left/right edges
     if (Math.min(e1[0].x,e1[1].x) < Math.min(e2[0].x,e2.[1].x))
         var le = e1, re = e2;
     else
@@ -165,36 +165,39 @@ function twoEdgeInterp(imagedata,e1,e2) {
     le = (le[0].y < le[1].y) ? le : le.reverse(); 
     re = (re[0].y < re[1].y) ? re : re.reverse(); 
     
-    // handle interpolation of lines with different ranges in Y
+    // setup interp begin for different starting Ys
     var startYDiff = le[0].y - re[0].y;
     if (startYDiff > 0) { // left edge has largest min Y
-        var startAtY = Math.ceil(le[0].y), lx = Math.ceil(le[0].x); 
-        var rx = re[0].x + (re[1].x-re[0].x) * startYDiff/(re[1].y - re[0].y);
+        var startAtT = startYDiff/(re[1].y - re[0].y); // start at param t
+        var startAtY = Math.ceil(le[0].y); // start at min Y
+        var lx = Math.ceil(le[0].x); // left x
+        var lc = le[0].c.clone();  // left color
+        var rx = re[0].x + (re[1].x-re[0].x) * startYDiff/(re[1].y - re[0].y); // right x
+        var rc = re[1].c.clone().subtract(re[0].c).scale(startAtT).add(re[0].c);  // right color
     } else { // right edge has largest min Y
-        var startAtY = Math.ceil(re[0].y), rx = re[0].x;
-        var lx = Match.ceil(le[0].x + (le[1].x-le[0].x) * startYDiff/(le[1].y - le[0].y));
-    } 
-    var startAt
-    var haltAtY = Math.min(le[1].y,re[1].y); // Y at which to stop interpolation
+        var startAtT = -startYDiff/(le[1].y - le[0].y); // start at param t
+        var startAtY = Math.ceil(re[0].y); // start at min Y
+        var lx = Math.ceil(le[0].x + (le[1].x-le[0].x) * startAtT); // left x
+        var lc = le[1].c.clone().subtract(le[0].c).scale(startAtT).add(le[0].c);  // left color
+        var rx = re[0].x; // right x
+        var rc = re[0].c.clone();  // right color
+    } // end if right edge has largest min Y
 
     // set up the vertical interpolation
-    var vDelta = 1 / (le[1].y-le[0].y); // norm'd vertical delta
-    var lc = le[0].c.clone();  // left color
-    var rc = re[0].c.clone();  // right color
+    var haltAtY = Math.min(le[1].y,re[1].y); // Y at which to stop interpolation
+    var vDelta = 1 / (haltAtY-startAtY); // norm'd vertical delta
     var lcDelta = le[1].c.clone().subtract(le[0].c).scale(vDelta); // left vertical color delta
     var rcDelta = re[1].c.clone().subtract(re[0].c).scale(vDelta); // right vertical color delta
-    var lx = Math.ceil(le[0].x); // left x coord
-    var rx = re[0].x; // right x coord
     var lxDelta = (le[1].x - le[0].x) * vDelta; // left vertical x delta
     var rxDelta = (re[1].x - re[0].x) * vDelta; // right vertical x delta
     
     // set up the horizontal interpolation
-    var hDelta = 1 / (re[0].x-le[0].x); // norm'd horizontal delta
+    var hDelta = 1 / (rx-lx); // norm'd horizontal delta
     var hc = new Color(); // horizontal color
     var hcDelta = new Color(); // horizontal color delta
     
     // do the interpolation
-    for (var y=le[0].y; y<=le[1].y; y++) {
+    for (var y=startAtY; y<=haltAtY; y++) {
         hc.copy(lc); // begin with the left color
         hcDelta.copy(rc).subtract(lc).scale(hDelta); // reset horiz color delta
         for (var x=Math.ceil(lx); x<=rx; x++) {
@@ -235,9 +238,7 @@ function fillPoly(imagdata,vArray) {
     // ignore any horizontal edges
     var sortedEdges = Object.keys(vArray).sort(compareYofEdges); // sort edges by min y
     var sortedNoHzEdges = sortedEdges.filter(edgeNotHorizontal); // remove all horizontal edges
-    var e1 = 0, e2 = 1; 
-    var e2 = (!edgeHorizontal[sortedIndices[e1+1])vArray[sortedIndices[(e1+2)%numVerts]].y) ? e1+1 : (e1+2)%numVerts;
-    var 
+    var e1 = 0, e2 = 1; // begin with first two edges
     do { // while there are still edges to interpolate between        
         // identify edge with lower max y
         // interpolate between the edge with lower max y and other edge
@@ -259,9 +260,9 @@ function main() {
     var imagedata = context.createImageData(w,h);
  
     // Define and render a rectangle in 2D with colors and coords at corners
-    fillPoly(imagedata,
-        [{x:50,y:50,c:new Color(255,0,0,255)}, {x:100,y:150,c:new Color(0,0,255,255)},
-         {x:250,y:50,c:new Color(0,255,0,255)}, {x:200,y:150,c:new Color(0,0,0,255)}]);
+    twoEdgeInterp(imagedata,
+        [{x:50,y:50,c:new Color(255,0,0,255)}, {x:100,y:150,c:new Color(0,0,255,255)}],
+        [{x:250,y:50,c:new Color(0,255,0,255)}, {x:200,y:150,c:new Color(0,0,0,255)}]);
     
     context.putImageData(imagedata, 0, 0); // display the image in the context
 }
