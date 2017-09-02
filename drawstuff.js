@@ -156,7 +156,7 @@ function drawPixel(imagedata,x,y,color) {
 function twoEdgeInterp(imagedata,e1,e2) {
     
     // determine left/right edges
-    if (Math.min(e1[0].x,e1[1].x) < Math.min(e2[0].x,e2.[1].x))
+    if (Math.min(e1[0].x,e1[1].x) < Math.min(e2[0].x,e2[1].x))
         var le = e1, re = e2;
     else
         var le = e2, re = e1; 
