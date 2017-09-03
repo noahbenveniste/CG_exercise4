@@ -174,7 +174,7 @@ function twoEdgeInterp(imagedata,e1,e2) {
         var lc = le[0].c.clone();  // left color
         var rx = re[0].x + (re[1].x-re[0].x) * startYDiff/(re[1].y - re[0].y); // right x
         var rc = re[1].c.clone().subtract(re[0].c).scale(startAtT).add(re[0].c);  // right color
-    } else { // right edge has largest min Y
+    } else { // end if left edge largest min Y, begin right edge largest min Y
         var startAtT = -startYDiff/(le[1].y - le[0].y); // start at param t
         var startAtY = Math.ceil(re[0].y); // start at min Y
         var lx = Math.ceil(le[0].x + (le[1].x-le[0].x) * startAtT); // left x
@@ -197,24 +197,24 @@ function twoEdgeInterp(imagedata,e1,e2) {
     var hcDelta = new Color(); // horizontal color delta
     
     // do the interpolation
-    for (var y=startAtY; y<=haltAtY; y++) {
+    for (var y=startAtY; y<=haltAtY; y++) { // for each pixel row edges share
         hc.copy(lc); // begin with the left color
         hcDelta.copy(rc).subtract(lc).scale(hDelta); // reset horiz color delta
-        for (var x=Math.ceil(lx); x<=rx; x++) {
-            drawPixel(imagedata,x,y,hc);
-            hc.add(hcDelta);
+        for (var x=Math.ceil(lx); x<=rx; x++) { // for each pixel in row
+            drawPixel(imagedata,x,y,hc); // draw the color
+            hc.add(hcDelta); // set next pixel color
         } // end horizontal
-        lc.add(lcDelta);
-        rc.add(rcDelta);
-        lx += lxDelta;
-        rx += rxDelta; 
+        lc.add(lcDelta); // set next left edge color
+        rc.add(rcDelta); // set next right edge color
+        lx += lxDelta; // set next left edge x coord
+        rx += rxDelta; // set next right edge x coord
     } // end vertical
 } // end twoEdgeInterp
 
 // fills the passed convex polygon
 // expects an array of vertices, listed in clockwise order
 // vertex objects have this structure: {x:float,y:float,c:Color}
-function fillPoly(imagdata,vArray) {
+function fillPoly(imagedata,vArray) {
     
     // compares the edges starting at v1 and v2
     // an edge is formed by the passed and subsequent vertices (with wrapping)
@@ -234,17 +234,32 @@ function fillPoly(imagdata,vArray) {
     } // end edgeHorizontal
     
     // sort the edges in the polygon by their min y coordinate
+    // next remove any horizontal edges
     // then loop through edges, interpolating between current two min edges
-    // ignore any horizontal edges
     var sortedEdges = Object.keys(vArray).sort(compareYofEdges); // sort edges by min y
     var sortedNoHzEdges = sortedEdges.filter(edgeNotHorizontal); // remove all horizontal edges
-    var e1 = 0, e2 = 1; // begin with first two edges
-    do { // while there are still edges to interpolate between        
-        // identify edge with lower max y
-        // interpolate between the edge with lower max y and other edge
-        // introduce next edge
-        // identify left and right edge
-    } while (e2 < numVerts); // end for each edge
+    var e1 = 0, e2; // begin with first two edges (those that begin first/have min two Ys)
+    var e1v1, e1v2, e2v1, e2v2; // the vertices included in these two edges
+    for (e2=1; e2<vArray.length; e2++) { // for each polygon vertex index in sorted filtered list
+        
+        // set up the vertices in the current two edges
+        e1v1 = vArray[sortedNoHzEdges[e1]];
+        e1v2 = vArray[(sortedNoHzEdges[e1]+1)%vArray.length];
+        e2v1 = vArray[sortedNoHzEdges[e2]];
+        e2v2 = vArray[(sortedNoHzEdges[e2]+1)%vArray.length];
+        
+        // interpolate between the current two edges
+        twoEdgeInterp(imagedata,[e1v1,e1v2],[e2v1,e2v2]);
+        
+        // discard the edge that ends first, or both if they end at same Y
+        switch(Math.sign(Math.max(e1v1.y,e1v2.y)-Math.max(e2v1.y,e2v2.y))) {
+            case -1: // e1 ends first
+            case 1: // e2 ends first
+            case 0; // they end at same Y
+            default: // something weird happened
+        } // end switch on which edge ends first
+        e1++;
+    } // end for each polygon vertex index in sorted filtered list
 } // end fillPoly
     
 
