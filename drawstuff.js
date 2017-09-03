@@ -261,8 +261,8 @@ function main() {
  
     // Define and render a rectangle in 2D with colors and coords at corners
     twoEdgeInterp(imagedata,
-        [{x:50,y:50,c:new Color(255,0,0,255)}, {x:150,y:50,c:new Color(0,0,255,255)}],
-        [{x:50,y:150,c:new Color(0,255,0,255)}, {x:150,y:150,c:new Color(0,0,0,255)}]);
+        [{x:50,y:50,c:new Color(255,0,0,255)}, {x:50,y:150,c:new Color(0,0,255,255)}],
+        [{x:150,y:50,c:new Color(0,255,0,255)}, {x:150,y:150,c:new Color(0,0,0,255)}]);
     
     context.putImageData(imagedata, 0, 0); // display the image in the context
 }
