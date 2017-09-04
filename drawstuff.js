@@ -238,9 +238,9 @@ function fillPoly(imagedata,vArray) {
     // then loop through edges, interpolating between current two min edges
     var sortedEdges = Object.keys(vArray).sort(compareYofEdges); // sort edges by min y
     var sortedNoHzEdges = sortedEdges.filter(edgeNotHorizontal); // remove all horizontal edges
-    var e1 = 0, e2; // begin with first two edges (those that begin first/have min two Ys)
+    var e1 = 0, e2 = 1; // begin with first two edges (those that begin first/have min two Ys)
     var e1v1, e1v2, e2v1, e2v2; // the vertices included in these two edges
-    for (e2=1; e2<vArray.length; e2++) { // for each polygon vertex index in sorted filtered list
+    while (e2<vArray.length) { // for each polygon vertex index in sorted filtered list
         
         // set up the vertices in the current two edges
         e1v1 = vArray[sortedNoHzEdges[e1]];
@@ -252,13 +252,24 @@ function fillPoly(imagedata,vArray) {
         twoEdgeInterp(imagedata,[e1v1,e1v2],[e2v1,e2v2]);
         
         // discard the edge that ends first, or both if they end at same Y
-        switch(Math.sign(Math.max(e1v1.y,e1v2.y)-Math.max(e2v1.y,e2v2.y))) {
-            case -1: // e1 ends first
-            case 1: // e2 ends first
-            case 0; // they end at same Y
-            default: // something weird happened
-        } // end switch on which edge ends first
-        e1++;
+        try {
+            switch(Math.sign(Math.max(e1v1.y,e1v2.y)-Math.max(e2v1.y,e2v2.y))) {
+                case -1: // e1 ends first
+                    e1 = e2; break; // discard e1, save e2
+                case 1: // e2 ends first
+                    break; // save e1, discard e2
+                case 0; // they end at same Y
+                    e2++; e1 = e2; break; // discard both edges
+                default: // something weird happened
+                    throw "fillPoly: odd endpoint Y comparison. NaN?";
+            } // end switch on which edge ends first
+            e2++; // add new second edge
+        } // end try
+        
+        catch (e) {
+            console.error(e);
+            break; // ... out of while loop
+        } // end catch
     } // end for each polygon vertex index in sorted filtered list
 } // end fillPoly
     
@@ -275,9 +286,9 @@ function main() {
     var imagedata = context.createImageData(w,h);
  
     // Define and render a rectangle in 2D with colors and coords at corners
-    twoEdgeInterp(imagedata,
-        [{x:50,y:50,c:new Color(255,0,0,255)}, {x:50,y:150,c:new Color(0,0,255,255)}],
-        [{x:150,y:50,c:new Color(0,255,0,255)}, {x:150,y:150,c:new Color(0,0,0,255)}]);
+    fillPoly(imagedata,
+        [{x:50,y:50,c:new Color(255,0,0,255)}, {x:150,y:50,c:new Color(0,255,0,255)}, 
+         {x:150,y:150,c:new Color(0,0,0,255)}, {x:50,y:150,c:new Color(0,0,255,255)});
     
     context.putImageData(imagedata, 0, 0); // display the image in the context
 }
