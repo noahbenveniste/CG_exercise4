@@ -258,7 +258,7 @@ function fillPoly(imagedata,vArray) {
                     e1 = e2; break; // discard e1, save e2
                 case 1: // e2 ends first
                     break; // save e1, discard e2
-                case 0; // they end at same Y
+                case 0: // they end at same Y
                     e2++; e1 = e2; break; // discard both edges
                 default: // something weird happened
                     throw "fillPoly: odd endpoint Y comparison. NaN?";
