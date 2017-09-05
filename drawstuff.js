@@ -113,9 +113,14 @@ class Color {
         return(newColor);
     } // end Color clone method
     
+        // translate color to string
+    toString() {
+        return(this.r +" "+ this.g +" "+ this.b +" "+ this.a);
+    }  // end Color toConsole
+    
         // Send color to console
     toConsole() {
-        console.log(this.r +" "+ this.g +" "+ this.b +" "+ this.a);
+        console.log(this.toString());
     }  // end Color toConsole
     
 } // end color class
@@ -236,7 +241,7 @@ function fillPoly(imagedata,vArray) {
     // sort the edges in the polygon by their min y coordinate
     // next remove any horizontal edges
     // then loop through edges, interpolating between current two min edges
-    console.log(vArray[0].x +" "+ vArray[0].y +" "+ vArray[0].c.toConsole());
+    console.log(vArray[0].x +" "+ vArray[0].y +" "+ vArray[0].c.toString());
     var sortedEdges = Object.keys(vArray).sort(compareYofEdges); // sort edges by min y
     var sortedNoHzEdges = sortedEdges.filter(edgeNotHorizontal); // remove all horizontal edges
     var e1 = 0, e2 = 1; // begin with first two edges (those that begin first/have min two Ys)
