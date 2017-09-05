@@ -236,7 +236,7 @@ function fillPoly(imagedata,vArray) {
     // sort the edges in the polygon by their min y coordinate
     // next remove any horizontal edges
     // then loop through edges, interpolating between current two min edges
-    console.log(vArray.toString);
+    console.log(vArray[0].toString);
     var sortedEdges = Object.keys(vArray).sort(compareYofEdges); // sort edges by min y
     var sortedNoHzEdges = sortedEdges.filter(edgeNotHorizontal); // remove all horizontal edges
     var e1 = 0, e2 = 1; // begin with first two edges (those that begin first/have min two Ys)
@@ -248,7 +248,7 @@ function fillPoly(imagedata,vArray) {
         e1v2 = vArray[(sortedNoHzEdges[e1]+1)%vArray.length];
         e2v1 = vArray[sortedNoHzEdges[e2]];
         e2v2 = vArray[(sortedNoHzEdges[e2]+1)%vArray.length];
-        console.log(e1v1.toString());
+        // console.log(e1v1.toString());
         
         // interpolate between the current two edges
         twoEdgeInterp(imagedata,[e1v1,e1v2],[e2v1,e2v2]);
