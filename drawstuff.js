@@ -236,7 +236,7 @@ function fillPoly(imagedata,vArray) {
     // sort the edges in the polygon by their min y coordinate
     // next remove any horizontal edges
     // then loop through edges, interpolating between current two min edges
-    console.log(vArray[0].toString);
+    console.log(vArray[0].x +" "+ vArray[0].y +" "+ vArray[0].c.toConsole());
     var sortedEdges = Object.keys(vArray).sort(compareYofEdges); // sort edges by min y
     var sortedNoHzEdges = sortedEdges.filter(edgeNotHorizontal); // remove all horizontal edges
     var e1 = 0, e2 = 1; // begin with first two edges (those that begin first/have min two Ys)
