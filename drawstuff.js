@@ -235,7 +235,6 @@ function fillPoly(imagedata,vArray) {
     // true if the passed edge is horizontal
     function edgeNotHorizontal(vtx,idx,ary) {
         
-        console.log(vArray[vtx].y +" vs. "+ vArray[(vtx+1)%vArray.length].y);
         return(vArray[vtx].y !== vArray[(vtx+1)%vArray.length].y);
     } // end edgeHorizontal
     
@@ -256,6 +255,9 @@ function fillPoly(imagedata,vArray) {
         e2v1 = vArray[sortedNoHzEdges[e2]];
         e2v2 = vArray[(sortedNoHzEdges[e2]+1)%vArray.length];
         console.log(e1v1.x +" "+ e1v1.y +" "+ e1v1.c.toString());
+        console.log(e1v2.x +" "+ e1v2.y +" "+ e1v2.c.toString());
+        console.log(e2v1.x +" "+ e2v1.y +" "+ e2v1.c.toString());
+        console.log(e2v2.x +" "+ e2v2.y +" "+ e2v2.c.toString());
         
         // interpolate between the current two edges
         twoEdgeInterp(imagedata,[e1v1,e1v2],[e2v1,e2v2]);
