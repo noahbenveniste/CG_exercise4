@@ -244,7 +244,8 @@ function fillPoly(imagedata,vArray) {
         e2v1 = vArray[sortedNoHzEdges[e2].index];
         e2v2 = vArray[(sortedNoHzEdges[e2].index+1)%vArray.length];
         console.log(e1v1.x +" "+ e1v1.y +" to "+ e1v2.x +" "+ e1v2.y);
-        console.log(e1v1.x +" "+ e1v1.y +" to "+ e1v2.x +" "+ e1v2.y);
+        console.log(e2v1.x +" "+ e2v1.y +" to "+ e2v2.x +" "+ e1v2.y);
+        console.log(" ");
         
         // interpolate between the current two edges
         twoEdgeInterp(imagedata,[e1v1,e1v2],[e2v1,e2v2]);
