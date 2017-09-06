@@ -226,8 +226,13 @@ function fillPoly(imagedata,vArray) {
     // expects two vertex indices into vArray
     function compareYofEdges(v1,v2) {
         
+        console.log(vArray[v1].y +" vs "+ vArray[(v1+1)%vArray.length].y);
+        console.log(vArray[v2].y +" vs "+ vArray[(v2+1)%vArray.length].y);
         var e1MinY = Math.min(vArray[v1].y,vArray[(v1+1)%vArray.length].y);
         var e2MinY = Math.min(vArray[v2].y,vArray[(v2+1)%vArray.length].y);
+        console.log(e1MinY +" vs "+ e2MinY);
+        console.log(Math.sign(e1MinY-e2MinY));
+        console.log();
         
         return(Math.sign(e1MinY-e2MinY));
     } // end compareEdgeY
@@ -241,7 +246,6 @@ function fillPoly(imagedata,vArray) {
     // sort the edges in the polygon by their min y coordinate
     // next remove any horizontal edges
     // then loop through edges, interpolating between current two min edges
-    console.log(vArray[0].x +" "+ vArray[0].y +" "+ vArray[0].c.toString());
     var sortedEdges = Object.keys(vArray).sort(compareYofEdges); // sort edges by min y
     console.log(sortedEdges.toString());
     var sortedNoHzEdges = sortedEdges.filter(edgeNotHorizontal); // remove all horizontal edges
