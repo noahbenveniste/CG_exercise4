@@ -221,35 +221,23 @@ function twoEdgeInterp(imagedata,e1,e2) {
 // vertex objects have this structure: {x:float,y:float,c:Color}
 function fillPoly(imagedata,vArray) {
     
-    // compares the edges starting at v1 and v2
-    // an edge is formed by the passed and subsequent vertices (with wrapping)
-    // expects two vertex indices into vArray
-    function compareYofEdges(v1,v2) {
-        
-        console.log(vArray[v1].y +" vs "+ vArray[(v1+1)%vArray.length].y);
-        console.log(vArray[v2].y +" vs "+ vArray[(v2+1)%vArray.length].y);
-        var e1MinY = Math.min(vArray[v1].y,vArray[(v1+1)%vArray.length].y);
-        var e2MinY = Math.min(vArray[v2].y,vArray[(v2+1)%vArray.length].y);
-        console.log(e1MinY +" vs "+ e2MinY);
-        console.log(Math.sign(e1MinY-e2MinY));
-        console.log();
-        
-        return(Math.sign(e1MinY-e2MinY));
-    } // end compareEdgeY
-    
-    // true if the passed edge is horizontal
-    function edgeNotHorizontal(vtx,idx,ary) {
-        
-        return(vArray[vtx].y !== vArray[(vtx+1)%vArray.length].y);
-    } // end edgeHorizontal
-    
     // sort the edges in the polygon by their min y coordinate
     // next remove any horizontal edges
     // then loop through edges, interpolating between current two min edges
-    var sortedEdges = Object.keys(vArray).sort(compareYofEdges); // sort edges by min y
-    console.log(sortedEdges.toString());
-    var sortedNoHzEdges = sortedEdges.filter(edgeNotHorizontal); // remove all horizontal edges
-    console.log(sortedNoHzEdges.toString());
+    var minYList = vArray.map(function(vtx,idx,ary) { // create array of minY index pairs
+        return({minY:Math.min(vtx.y,vArray[(idx+1)%vArray.length].y), index:idx});
+    }); 
+    minYList.forEach(function(v,i,a) {console.log("minY:" +v.minY+ " index: " +v.index)});
+    minYList.sort(function(e1,e2) { // sort array by minY
+        return(Math.sign(e1.minY-e2.minY));
+    });
+    minYList.forEach(function(v,i,a) {console.log("minY:" +v.minY+ " index: " +v.index)});
+    var sortedNoHzEdges = minYList.filter(function (vtx,idx,ary) {
+        return(vArray[vtx.index].y !== vArray[(vtx.index+1)%vArray.length].y);
+    });
+    minYList.forEach(function(v,i,a) {console.log("minY:" +v.minY+ " index: " +v.index)});
+    return();
+    
     var e1 = 0, e2 = 1; // begin with first two edges (those that begin first/have min two Ys)
     var e1v1, e1v2, e2v1, e2v2; // the vertices included in these two edges
     while (e2<sortedNoHzEdges.length) { // for each polygon vertex index in sorted filtered list
