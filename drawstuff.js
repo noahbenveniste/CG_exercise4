@@ -243,10 +243,6 @@ function fillPoly(imagedata,vArray) {
         e1v2 = vArray[(sortedNoHzEdges[e1].index+1)%vArray.length];
         e2v1 = vArray[sortedNoHzEdges[e2].index];
         e2v2 = vArray[(sortedNoHzEdges[e2].index+1)%vArray.length];
-        console.log(e1v1.x +" "+ e1v1.y +" "+ e1v1.c.toString());
-        console.log(e1v2.x +" "+ e1v2.y +" "+ e1v2.c.toString());
-        console.log(e2v1.x +" "+ e2v1.y +" "+ e2v1.c.toString());
-        console.log(e2v2.x +" "+ e2v2.y +" "+ e2v2.c.toString());
         
         // interpolate between the current two edges
         twoEdgeInterp(imagedata,[e1v1,e1v2],[e2v1,e2v2]);
@@ -287,8 +283,8 @@ function main() {
  
     // Define and render a rectangle in 2D with colors and coords at corners
     fillPoly(imagedata,
-        [{x:50,y:50,c:new Color(255,0,0,255)}, {x:150,y:50,c:new Color(0,255,0,255)}, 
-         {x:150,y:150,c:new Color(0,0,0,255)}, {x:50,y:150,c:new Color(0,0,255,255)}]);
+        [{x:50,y:50,c:new Color(255,0,0,255)}, {x:150,y:100,c:new Color(0,255,0,255)}, 
+         {x:150,y:200,c:new Color(0,0,0,255)}, {x:50,y:150,c:new Color(0,0,255,255)}]);
     
     context.putImageData(imagedata, 0, 0); // display the image in the context
 }
