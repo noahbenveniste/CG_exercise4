@@ -155,42 +155,72 @@ function drawPixel(imagedata,x,y,color) {
 
 // interpolate and draw between two edges
 // draws only in the y range occupied by both edges
-// expects two left and right edge parameters, each a two element array of objects
-// the first object in each edge is the upper endpoint, the second the lower
+// expects two edge parameters, each a two element array of vertex objects
 // vertex objects have this structure: {x:float,y:float,c:Color}
 function twoEdgeInterp(imagedata,e1,e2) {
     
-    // determine left/right edges
-    if (Math.min(e1[0].x,e1[1].x) < Math.min(e2[0].x,e2[1].x))
-        var le = e1, re = e2;
-    else
-        var le = e2, re = e1; 
+    // create edge arrays for overlapping shared Y range
+    var e1new = [[],[]], e2new = [[],[]];
     
-    // ensure vertex with min y is first
-    le = (le[0].y < le[1].y) ? le : le.reverse(); 
-    re = (re[0].y < re[1].y) ? re : re.reverse(); 
+    // ensure vertex with min y is first in each edge
+    e1 = (e1[0].y < e1[1].y) ? e1 : e1.reverse(); 
+    e2 = (e2[0].y < e2[1].y) ? e2 : e2.reverse(); 
     
-    // setup interp begin for different starting Ys
-    var startYDiff = le[0].y - re[0].y;
-    if (startYDiff > 0) { // left edge has largest min Y
-        var startAtT = startYDiff/(re[1].y - re[0].y); // start at param t
-        var startAtY = Math.ceil(le[0].y); // start at min Y
-        var lx = Math.ceil(le[0].x); // left x
-        var lc = le[0].c.clone();  // left color
-        var rx = re[0].x + (re[1].x-re[0].x) * startYDiff/(re[1].y - re[0].y); // right x
-        var rc = re[1].c.clone().subtract(re[0].c).scale(startAtT).add(re[0].c);  // right color
-    } else { // end if left edge largest min Y, begin right edge largest min Y
-        var startAtT = -startYDiff/(le[1].y - le[0].y); // start at param t
-        var startAtY = Math.ceil(re[0].y); // start at min Y
-        var lx = Math.ceil(le[0].x + (le[1].x-le[0].x) * startAtT); // left x
-        var lc = le[1].c.clone().subtract(le[0].c).scale(startAtT).add(le[0].c);  // left color
-        var rx = re[0].x; // right x
-        var rc = re[0].c.clone();  // right color
-    } // end if right edge has largest min Y
-
+    // fill starting endpoints of edges with overlapping shared Y range
+    var startYDiff = e1[0].y - e2[0].y;
+    if (startYDiff > 0) { // e1 has largest min Y
+        var startAtT = startYDiff/(e2[1].y - e2[0].y); // t at largest min Y
+        e1new[0].x = Math.ceil(e1[0].x); // set X at largest min Y in overlapping e1
+        e1new[0].y = Math.ceil(e1[0].y); // set Y at largest min Y in overlapping e1
+        e1new[0].c = e1[0].c.clone();  // set color at largest min Y in overlapping e1
+        e2new[0].x = e2[0].x + (e2[1].x-e2[0].x) * startYDiff/(e2[1].y - e2[0].y); // set X in e2
+        e2new[0].y = e1new[0].y; // set Y at largest min Y in overlapping e2 (same as e1)
+        e2new[0].c = e2[1].c.clone().subtract(e2[0].c).scale(startAtT).add(e2[0].c);  // set color in e2
+    } else { // end if e1 largest min Y, begin e2 largest min Y
+        var startAtT = -startYDiff/(e1[1].y - e1[0].y); // t at largest min Y
+        e2new[0].x = Math.ceil(e2[0].x); // set X at largest min Y in overlapping e2
+        e2new[0].y = Math.ceil(e2[0].y); // set Y at largest min Y in overlapping e2
+        e2new[0].c = e2[0].c.clone();  // set color at largest min Y in overlapping e2
+        e1new[0].x = e1[0].x + (e1[1].x-e1[0].x) * startYDiff/(e1[1].y - e1[0].y); // set X in e1
+        e1new[0].y = e2new[0].y; // set Y at largest min Y in overlapping e1 (same as e2)
+        e1new[0].c = e1[1].c.clone().subtract(e1[0].c).scale(startAtT).add(e1[0].c);  // set color in e1
+    } // end if e2 has largest min Y
+    
+    // fill ending endpoints of edges with overlapping shared Y range (color irrelevant here)
+    var endYDiff = e1[1].y - e2[1].y; 
+    if (endYDiff > 0) { // e1 has largest max Y
+        e2new[1].x = e2[1].x; // set X at smallest max Y in e2
+        e2new[1].y = e2[1].y; // set Y at smallest max Y in e2
+        e1new[1].x = e1[1].x + (e1[0].x-e1[1].x) * endYDiff/(e1[0].y - e1[1].y);
+        e1new[1].y = e2new[1].y; // set Y at smallest max Y in e1
+    } else { // end if e1 largest max Y, begin e2 largest max Y
+        e1new[1].x = e1[1].x; // set X at smallest max Y in e1
+        e1new[1].y = e1[1].y; // set Y at smallest max Y in e1
+        e2new[1].x = e2[1].x + (e2[0].x-e2[1].x) * endYDiff/(e2[0].y - e2[1].y);
+        e2new[1].y = e1new[1].y; // set Y at smallest max Y in e2
+    } // end if e2 largest max Y
+    
+    // determine which overlapping edge is left, which is right
+    try {
+        switch(Math.sign(e1new[0].x-e2new[0].x) + Math.sign(e1new[1].x - e2new[1].x)) {
+            case -2: // both e1 endpoints are left of e2
+            case -1: // one e1 endpoint left of e2 (other at same loc)
+                var le = e1, re = e2; break;
+            case 0: // one endpoint left of e2, other right. Error!
+                throw "twoEdgeInterp: intersecting edges!"; break;
+            case 1: // one e1 endpoint right of e2 (other at same loc)
+            case 2: // both e1 endpoints are right of e2
+                var le = e2, re = e1; break;
+            default: // NaN or similar. Error!
+                throw "twoEdgeInterp: NaN or similar!";
+        } // end switch
+    } // end try
+    catch (e) {
+        console.error(e); return;
+    } // end catch
+    
     // set up the vertical interpolation
-    var haltAtY = Math.min(le[1].y,re[1].y); // Y at which to stop interpolation
-    var vDelta = 1 / (haltAtY-startAtY); // norm'd vertical delta
+    var vDelta = 1 / (e1new[1].y-e1new[0].y); // norm'd vertical delta
     var lcDelta = le[1].c.clone().subtract(le[0].c).scale(vDelta); // left vertical color delta
     var rcDelta = re[1].c.clone().subtract(re[0].c).scale(vDelta); // right vertical color delta
     var lxDelta = (le[1].x - le[0].x) * vDelta; // left vertical x delta
@@ -252,7 +282,7 @@ function fillPoly(imagedata,vArray) {
         
         // discard the edge that ends first, or both if they end at same Y
         try {
-            switch(Math.sign(Math.max(e1v1.y,e1v2.y)-Math.max(e2v1.y,e2v2.y))) {
+            switch (Math.sign(Math.max(e1v1.y,e1v2.y)-Math.max(e2v1.y,e2v2.y))) {
                 case -1: // e1 ends first
                     e1 = e2; break; // discard e1, save e2
                 case 1: // e2 ends first
