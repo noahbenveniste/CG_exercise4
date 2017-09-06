@@ -235,8 +235,8 @@ function fillPoly(imagedata,vArray) {
     // true if the passed edge is horizontal
     function edgeNotHorizontal(vtx,idx,ary) {
         
-        return(vArray[vtx].y !== vArray[(vtx+1)%vArray.length].y);
         console.log(vArray[vtx].y +" vs. "+ vArray[(vtx+1)%vArray.length].y);
+        return(vArray[vtx].y !== vArray[(vtx+1)%vArray.length].y);
     } // end edgeHorizontal
     
     // sort the edges in the polygon by their min y coordinate
