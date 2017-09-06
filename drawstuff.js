@@ -235,7 +235,7 @@ function fillPoly(imagedata,vArray) {
     var sortedNoHzEdges = minYList.filter(function (vtx,idx,ary) {
         return(vArray[vtx.index].y !== vArray[(vtx.index+1)%vArray.length].y);
     });
-    minYList.forEach(function(v,i,a) {console.log("minY:" +v.minY+ " index: " +v.index)}); console.log(" ");
+    sortedNoHzEdges.forEach(function(v,i,a) {console.log("minY:" +v.minY+ " index: " +v.index)}); console.log(" ");
     return;
     
     var e1 = 0, e2 = 1; // begin with first two edges (those that begin first/have min two Ys)
