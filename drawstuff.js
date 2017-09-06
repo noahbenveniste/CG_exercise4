@@ -247,7 +247,7 @@ function fillPoly(imagedata,vArray) {
     console.log(sortedNoHzEdges.toString());
     var e1 = 0, e2 = 1; // begin with first two edges (those that begin first/have min two Ys)
     var e1v1, e1v2, e2v1, e2v2; // the vertices included in these two edges
-    while (e2<vArray.length) { // for each polygon vertex index in sorted filtered list
+    while (e2<sortedNoHzEdges.length) { // for each polygon vertex index in sorted filtered list
         
         // set up the vertices in the current two edges
         e1v1 = vArray[sortedNoHzEdges[e1]];
