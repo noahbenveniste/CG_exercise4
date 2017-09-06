@@ -227,15 +227,15 @@ function fillPoly(imagedata,vArray) {
     var minYList = vArray.map(function(vtx,idx,ary) { // create array of minY index pairs
         return({minY:Math.min(vtx.y,vArray[(idx+1)%vArray.length].y), index:idx});
     }); 
-    minYList.forEach(function(v,i,a) {console.log("minY:" +v.minY+ " index: " +v.index)});
+    minYList.forEach(function(v,i,a) {console.log("minY:" +v.minY+ " index: " +v.index)}); console.log(" ");
     minYList.sort(function(e1,e2) { // sort array by minY
         return(Math.sign(e1.minY-e2.minY));
     });
-    minYList.forEach(function(v,i,a) {console.log("minY:" +v.minY+ " index: " +v.index)});
+    minYList.forEach(function(v,i,a) {console.log("minY:" +v.minY+ " index: " +v.index)}); console.log(" ");
     var sortedNoHzEdges = minYList.filter(function (vtx,idx,ary) {
         return(vArray[vtx.index].y !== vArray[(vtx.index+1)%vArray.length].y);
     });
-    minYList.forEach(function(v,i,a) {console.log("minY:" +v.minY+ " index: " +v.index)});
+    minYList.forEach(function(v,i,a) {console.log("minY:" +v.minY+ " index: " +v.index)}); console.log(" ");
     return;
     
     var e1 = 0, e2 = 1; // begin with first two edges (those that begin first/have min two Ys)
