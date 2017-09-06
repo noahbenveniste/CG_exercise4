@@ -236,7 +236,7 @@ function fillPoly(imagedata,vArray) {
         return(vArray[vtx.index].y !== vArray[(vtx.index+1)%vArray.length].y);
     });
     minYList.forEach(function(v,i,a) {console.log("minY:" +v.minY+ " index: " +v.index)});
-    return();
+    return;
     
     var e1 = 0, e2 = 1; // begin with first two edges (those that begin first/have min two Ys)
     var e1v1, e1v2, e2v1, e2v2; // the vertices included in these two edges
