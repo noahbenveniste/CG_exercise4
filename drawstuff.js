@@ -223,30 +223,26 @@ function fillPoly(imagedata,vArray) {
     
     // sort the edges in the polygon by their min y coordinate
     // next remove any horizontal edges
-    // then loop through edges, interpolating between current two min edges
     var minYList = vArray.map(function(vtx,idx,ary) { // create array of minY index pairs
         return({minY:Math.min(vtx.y,vArray[(idx+1)%vArray.length].y), index:idx});
     }); 
-    minYList.forEach(function(v,i,a) {console.log("minY:" +v.minY+ " index: " +v.index)}); console.log(" ");
     minYList.sort(function(e1,e2) { // sort array by minY
         return(Math.sign(e1.minY-e2.minY));
     });
-    minYList.forEach(function(v,i,a) {console.log("minY:" +v.minY+ " index: " +v.index)}); console.log(" ");
-    var sortedNoHzEdges = minYList.filter(function (vtx,idx,ary) {
+    var sortedNoHzEdges = minYList.filter(function (vtx,idx,ary) { // filter out horizontal edges
         return(vArray[vtx.index].y !== vArray[(vtx.index+1)%vArray.length].y);
     });
-    sortedNoHzEdges.forEach(function(v,i,a) {console.log("minY:" +v.minY+ " index: " +v.index)}); console.log(" ");
-    return;
-    
+
+    // move through sorted edges, interpolating between each minY pair
     var e1 = 0, e2 = 1; // begin with first two edges (those that begin first/have min two Ys)
     var e1v1, e1v2, e2v1, e2v2; // the vertices included in these two edges
     while (e2<sortedNoHzEdges.length) { // for each polygon vertex index in sorted filtered list
         
         // set up the vertices in the current two edges
-        e1v1 = vArray[sortedNoHzEdges[e1]];
-        e1v2 = vArray[(sortedNoHzEdges[e1]+1)%vArray.length];
-        e2v1 = vArray[sortedNoHzEdges[e2]];
-        e2v2 = vArray[(sortedNoHzEdges[e2]+1)%vArray.length];
+        e1v1 = vArray[sortedNoHzEdges[e1].index];
+        e1v2 = vArray[(sortedNoHzEdges[e1].index+1)%vArray.length];
+        e2v1 = vArray[sortedNoHzEdges[e2].index];
+        e2v2 = vArray[(sortedNoHzEdges[e2].index+1)%vArray.length];
         console.log(e1v1.x +" "+ e1v1.y +" "+ e1v1.c.toString());
         console.log(e1v2.x +" "+ e1v2.y +" "+ e1v2.c.toString());
         console.log(e2v1.x +" "+ e2v1.y +" "+ e2v1.c.toString());
