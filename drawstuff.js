@@ -159,6 +159,10 @@ function drawPixel(imagedata,x,y,color) {
 // vertex objects have this structure: {x:float,y:float,c:Color}
 function twoEdgeInterp(imagedata,e1,e2) {
     
+    console.log(e1[0].x +" "+ e1[0].y +" "+ e1[0].c.toString());
+    console.log(e2[1].x +" "+ e2[1].y +" "+ e2[1].c.toString());
+    console.log(" ");
+    
     // create edge arrays for overlapping shared Y range
     var e1new = [[],[]], e2new = [[],[]];
     
@@ -200,6 +204,10 @@ function twoEdgeInterp(imagedata,e1,e2) {
         e2new[1].y = e1new[1].y; // set Y at smallest max Y in e2
     } // end if e2 largest max Y
     
+    console.log(e1new[0].x +" "+ e1new[0].y +" "+ e1new[0].c.toString());
+    console.log(e2new[1].x +" "+ e2new[1].y +" "+ e2new[1].c.toString());
+    console.log(" ");
+
     // determine which overlapping edge is left, which is right
     try {
         switch(Math.sign(e1new[0].x-e2new[0].x) + Math.sign(e1new[1].x - e2new[1].x)) {
@@ -219,6 +227,10 @@ function twoEdgeInterp(imagedata,e1,e2) {
         console.error(e); return;
     } // end catch
     
+    console.log(le[0].x +" "+ le[0].y +" "+ le[0].c.toString());
+    console.log(re[1].x +" "+ re[1].y +" "+ re[1].c.toString());
+    console.log(" ");
+
     // set up the vertical interpolation
     var vDelta = 1 / (e1new[1].y-e1new[0].y); // norm'd vertical delta
     var lcDelta = le[1].c.clone().subtract(le[0].c).scale(vDelta); // left vertical color delta
