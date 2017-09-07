@@ -245,15 +245,13 @@ function twoEdgeInterp(imagedata,e1,e2) {
     var lc = le[0].c.clone(), rc = re[0].c.clone(); // init left/right color
     
     // set up the horizontal interpolation
-    var hDelta = 1 / (re[0].x-le[0].x); // norm'd horizontal delta
     var hc = new Color(); // horizontal color
     var hcDelta = new Color(); // horizontal color delta
     
     // do the interpolation
     for (var y=le[0].y; y<=le[1].y; y++) { // for each pixel row edges share
         hc.copy(lc); // begin with the left color
-        hcDelta.copy(rc).subtract(lc).scale(hDelta); // reset horiz color delta
-        console.log("from " +lx+ " to " +rx);
+        hcDelta.copy(rc).subtract(lc).scale(1/(rx-lx)); // reset horiz color delta
         for (var x=Math.ceil(lx); x<=rx; x++) { // for each pixel in row
             drawPixel(imagedata,x,y,hc); // draw the color
             hc.add(hcDelta); // set next pixel color
