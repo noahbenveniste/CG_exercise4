@@ -253,6 +253,7 @@ function twoEdgeInterp(imagedata,e1,e2) {
     for (var y=le[0].y; y<=le[1].y; y++) { // for each pixel row edges share
         hc.copy(lc); // begin with the left color
         hcDelta.copy(rc).subtract(lc).scale(hDelta); // reset horiz color delta
+        console.log("from " +lx+ " to " +rx);
         for (var x=Math.ceil(lx); x<=rx; x++) { // for each pixel in row
             drawPixel(imagedata,x,y,hc); // draw the color
             hc.add(hcDelta); // set next pixel color
