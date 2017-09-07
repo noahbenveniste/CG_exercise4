@@ -213,12 +213,12 @@ function twoEdgeInterp(imagedata,e1,e2) {
         switch(Math.sign(e1new[0].x-e2new[0].x) + Math.sign(e1new[1].x - e2new[1].x)) {
             case -2: // both e1 endpoints are left of e2
             case -1: // one e1 endpoint left of e2 (other at same loc)
-                var le = e1, re = e2; break;
+                var le = e1new, re = e2new; break;
             case 0: // one endpoint left of e2, other right. Error!
                 throw "twoEdgeInterp: intersecting edges!"; break;
             case 1: // one e1 endpoint right of e2 (other at same loc)
             case 2: // both e1 endpoints are right of e2
-                var le = e2, re = e1; break;
+                var le = e2new, re = e1new; break;
             default: // NaN or similar. Error!
                 throw "twoEdgeInterp: NaN or similar!";
         } // end switch
