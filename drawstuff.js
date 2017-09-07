@@ -177,7 +177,7 @@ function twoEdgeInterp(imagedata,e1,e2) {
         e1new[0].x = Math.ceil(e1[0].x); // set X at largest min Y in overlapping e1
         e1new[0].y = Math.ceil(e1[0].y); // set Y at largest min Y in overlapping e1
         e1new[0].c = e1[0].c.clone();  // set color at largest min Y in overlapping e1
-        e2new[0].x = e2[0].x + (e2[1].x-e2[0].x) * startYDiff/(e2[1].y - e2[0].y); // set X in e2
+        e2new[0].x = e2[0].x + (e2[1].x-e2[0].x) * startAtT; // set X in e2
         e2new[0].y = e1new[0].y; // set Y at largest min Y in overlapping e2 (same as e1)
         e2new[0].c = e2[1].c.clone().subtract(e2[0].c).scale(startAtT).add(e2[0].c);  // set color in e2
     } else { // end if e1 largest min Y, begin e2 largest min Y
@@ -185,27 +185,29 @@ function twoEdgeInterp(imagedata,e1,e2) {
         e2new[0].x = Math.ceil(e2[0].x); // set X at largest min Y in overlapping e2
         e2new[0].y = Math.ceil(e2[0].y); // set Y at largest min Y in overlapping e2
         e2new[0].c = e2[0].c.clone();  // set color at largest min Y in overlapping e2
-        e1new[0].x = e1[0].x + (e1[1].x-e1[0].x) * startYDiff/(e1[1].y - e1[0].y); // set X in e1
+        e1new[0].x = e1[0].x + (e1[1].x-e1[0].x) * startAtT; // set X in e1
         e1new[0].y = e2new[0].y; // set Y at largest min Y in overlapping e1 (same as e2)
         e1new[0].c = e1[1].c.clone().subtract(e1[0].c).scale(startAtT).add(e1[0].c);  // set color in e1
     } // end if e2 has largest min Y
     
-    // fill ending endpoints of edges with overlapping shared Y range (color irrelevant here)
+    // fill ending endpoints of edges with overlapping shared Y range
     var endYDiff = e1[1].y - e2[1].y; 
     if (endYDiff > 0) { // e1 has largest max Y
+        var endAtT = endYDiff/(e2[0].y - e2[1].y); // t at largest min Y
         e2new[1].x = e2[1].x; // set X at smallest max Y in e2
         e2new[1].y = e2[1].y; // set Y at smallest max Y in e2
         e2new[1].c = e2[1].c.clone(); // set color at smallest max Y in e2
-        e1new[1].x = e1[1].x + (e1[0].x-e1[1].x) * endYDiff/(e1[0].y - e1[1].y);
+        e1new[1].x = e1[1].x + (e1[0].x-e1[1].x) * endAtT;
         e1new[1].y = e2new[1].y; // set Y at smallest max Y in e1
-        e1new[1].c = e1[0].c.clone().subtract(e1[1].c).scale(startAtT).add(e1[1].c);  // set color in e1
+        e1new[1].c = e1[0].c.clone().subtract(e1[1].c).scale(endAtT).add(e1[1].c);  // set color in e1
     } else { // end if e1 largest max Y, begin e2 largest max Y
+        var endAtT = -startYDiff/(e1[0].y - e1[1].y); // t at largest min Y
         e1new[1].x = e1[1].x; // set X at smallest max Y in e1
         e1new[1].y = e1[1].y; // set Y at smallest max Y in e1
         e1new[1].c = e1[1].c.clone(); // set color at smallest max Y in e1
-        e2new[1].x = e2[1].x + (e2[0].x-e2[1].x) * endYDiff/(e2[0].y - e2[1].y);
+        e2new[1].x = e2[1].x + (e2[0].x-e2[1].x) * endAtT;
         e2new[1].y = e1new[1].y; // set Y at smallest max Y in e2
-        e2new[1].c = e2[0].c.clone().subtract(e2[1].c).scale(startAtT).add(e2[1].c);  // set color in e1
+        e2new[1].c = e2[0].c.clone().subtract(e2[1].c).scale(endAtT).add(e2[1].c);  // set color in e1
     } // end if e2 largest max Y
     
     console.log(e1new[0].x +" "+ e1new[0].y +" "+ e1new[0].c.toString() +" "+ e1new[1].x +" "+ e1new[1].y +" "+ e1new[1].c.toString());
@@ -244,11 +246,9 @@ function twoEdgeInterp(imagedata,e1,e2) {
     var lx = le[0].x, rx = re[0].x; // init left/right x coord
     var lc = le[0].c.clone(), rc = re[0].c.clone(); // init left/right color
     
-    // set up the horizontal interpolation
+    // do the interpolation
     var hc = new Color(); // horizontal color
     var hcDelta = new Color(); // horizontal color delta
-    
-    // do the interpolation
     for (var y=le[0].y; y<=le[1].y; y++) { // for each pixel row edges share
         hc.copy(lc); // begin with the left color
         hcDelta.copy(rc).subtract(lc).scale(1/(rx-lx)); // reset horiz color delta
