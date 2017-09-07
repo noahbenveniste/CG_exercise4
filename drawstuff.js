@@ -205,7 +205,7 @@ function twoEdgeInterp(imagedata,e1,e2) {
     } // end if e2 largest max Y
     
     console.log(e1new[0].x +" "+ e1new[0].y +" "+ e1new[0].c.toString());
-    console.log(e2new[1].x +" "+ e2new[1].y +" "+ e2new[1].c.toString());
+    console.log(e2new[1].x +" "+ e2new[1].y);
     console.log(" ");
 
     // determine which overlapping edge is left, which is right
