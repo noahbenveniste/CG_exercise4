@@ -125,6 +125,127 @@ class Color {
     
 } // end color class
 
+// Vector class
+class Vector { 
+    constructor(x,y,z) {
+        this.set(x,y,z);
+    } // end constructor
+    
+    // sets the components of a vector
+    set(x,y,z) {
+        try {
+            if ((typeof(x) !== "number") || (typeof(y) !== "number") || (typeof(z) !== "number"))
+                throw "vector component not a number";
+            else
+                this.x = x; this.y = y; this.z = z; 
+        } // end try
+        
+        catch(e) {
+            console.log(e);
+        }
+    } // end vector set
+    
+    // copy the passed vector into this one
+    copy(v) {
+        try {
+            if (!(v instanceof Vector))
+                throw "Vector.copy: non-vector parameter";
+            else
+                this.x = v.x; this.y = v.y; this.z = v.z;
+        } // end try
+        
+        catch(e) {
+            console.log(e);
+        }
+    }
+    
+    toConsole(prefix) {
+        console.log(prefix+"["+this.x+","+this.y+","+this.z+"]");
+    } // end to console
+    
+    // static dot method
+    static dot(v1,v2) {
+        try {
+            if (!(v1 instanceof Vector) || !(v2 instanceof Vector))
+                throw "Vector.dot: non-vector parameter";
+            else
+                return(v1.x*v2.x + v1.y*v2.y + v1.z*v2.z);
+        } // end try
+        
+        catch(e) {
+            console.log(e);
+            return(NaN);
+        }
+    } // end dot static method
+    
+    // static add method
+    static add(v1,v2) {
+        try {
+            if (!(v1 instanceof Vector) || !(v2 instanceof Vector))
+                throw "Vector.add: non-vector parameter";
+            else
+                return(new Vector(v1.x+v2.x,v1.y+v2.y,v1.z+v2.z));
+        } // end try
+        
+        catch(e) {
+            console.log(e);
+            return(new Vector(NaN,NaN,NaN));
+        }
+    } // end add static method
+
+    // static subtract method, v1-v2
+    static subtract(v1,v2) {
+        try {
+            if (!(v1 instanceof Vector) || !(v2 instanceof Vector))
+                throw "Vector.subtract: non-vector parameter";
+            else {
+                var v = new Vector(v1.x-v2.x,v1.y-v2.y,v1.z-v2.z);
+                //v.toConsole("Vector.subtract: ");
+                return(v);
+            }
+        } // end try
+        
+        catch(e) {
+            console.log(e);
+            return(new Vector(NaN,NaN,NaN));
+        }
+    } // end subtract static method
+
+    // static scale method
+    static scale(c,v) {
+        try {
+            if (!(typeof(c) === "number") || !(v instanceof Vector))
+                throw "Vector.scale: malformed parameter";
+            else
+                return(new Vector(c*v.x,c*v.y,c*v.z));
+        } // end try
+        
+        catch(e) {
+            console.log(e);
+            return(new Vector(NaN,NaN,NaN));
+        }
+    } // end scale static method
+    
+    // static normalize method
+    static normalize(v) {
+        try {
+            if (!(v instanceof Vector))
+                throw "Vector.normalize: parameter not a vector";
+            else {
+                var lenDenom = 1/Math.sqrt(Vector.dot(v,v));
+                return(Vector.scale(lenDenom,v));
+            }
+        } // end try
+        
+        catch(e) {
+            console.log(e);
+            return(new Vector(NaN,NaN,NaN));
+        }
+    } // end scale static method
+    
+} // end Vector class
+
+
 
 /* utility functions */
 
@@ -194,7 +315,6 @@ function twoEdgeInterp(imagedata,e1,e2) {
     var endYDiff = e1[1].y - e2[1].y; 
     if (endYDiff > 0) { // e1 has largest max Y
         var endAtT = -endYDiff/(e1[0].y - e1[1].y); // t at largest min Y
-        console.log(endAtT);
         e2new[1].x = e2[1].x; // set X at smallest max Y in e2
         e2new[1].y = e2[1].y; // set Y at smallest max Y in e2
         e2new[1].c = e2[1].c.clone(); // set color at smallest max Y in e2
@@ -203,7 +323,6 @@ function twoEdgeInterp(imagedata,e1,e2) {
         e1new[1].c = e1[0].c.clone().subtract(e1[1].c).scale(endAtT).add(e1[1].c);  // set color in e1
     } else { // end if e1 largest max Y, begin e2 largest max Y
         var endAtT = endYDiff/(e2[0].y - e2[1].y); // t at largest min Y
-        console.log(endAtT);
         e1new[1].x = e1[1].x; // set X at smallest max Y in e1
         e1new[1].y = e1[1].y; // set Y at smallest max Y in e1
         e1new[1].c = e1[1].c.clone(); // set color at smallest max Y in e1
@@ -212,10 +331,6 @@ function twoEdgeInterp(imagedata,e1,e2) {
         e2new[1].c = e2[0].c.clone().subtract(e2[1].c).scale(endAtT).add(e2[1].c);  // set color in e2
     } // end if e2 largest max Y
     
-    console.log(e1new[0].x +" "+ e1new[0].y +" "+ e1new[0].c.toString() +" "+ e1new[1].x +" "+ e1new[1].y +" "+ e1new[1].c.toString());
-    console.log(e2new[0].x +" "+ e2new[0].y +" "+ e2new[0].c.toString() +" "+ e2new[1].x +" "+ e2new[1].y +" "+ e2new[1].c.toString());
-    console.log(" ");
-
     // determine which overlapping edge is left, which is right
     try {
         switch(Math.sign(e1new[0].x-e2new[0].x) + Math.sign(e1new[1].x - e2new[1].x)) {
@@ -235,10 +350,6 @@ function twoEdgeInterp(imagedata,e1,e2) {
         console.error(e); return;
     } // end catch
     
-    console.log(le[0].x +" "+ le[0].y +" "+ le[0].c.toString() +" "+ le[1].x +" "+ le[1].y +" "+ le[1].c.toString());
-    console.log(re[0].x +" "+ re[0].y +" "+ re[0].c.toString() +" "+ re[1].x +" "+ re[1].y +" "+ re[1].c.toString());
-    console.log(" ");
-
     // set up the vertical interpolation
     var vDelta = 1 / (e1new[1].y-e1new[0].y); // norm'd vertical delta
     var lcDelta = le[1].c.clone().subtract(le[0].c).scale(vDelta); // left vertical color delta
@@ -292,9 +403,6 @@ function fillPoly(imagedata,vArray) {
         e1v2 = vArray[(sortedNoHzEdges[e1].index+1)%vArray.length];
         e2v1 = vArray[sortedNoHzEdges[e2].index];
         e2v2 = vArray[(sortedNoHzEdges[e2].index+1)%vArray.length];
-        console.log(e1v1.x +" "+ e1v1.y +" to "+ e1v2.x +" "+ e1v2.y);
-        console.log(e2v1.x +" "+ e2v1.y +" to "+ e2v2.x +" "+ e2v2.y);
-        console.log(" ");
         
         // interpolate between the current two edges
         twoEdgeInterp(imagedata,[e1v1,e1v2],[e2v1,e2v2]);
@@ -320,6 +428,27 @@ function fillPoly(imagedata,vArray) {
         } // end catch
     } // end for each polygon vertex index in sorted filtered list
 } // end fillPoly
+
+// projects the passed polygon using the passed viewing params
+// expects a convex poly, as an array of vertices in clockwise order
+// vertex objects have this structure: {x:float,y:float,z:float}
+// expects a view description with this structure: {eye:Vector,
+// at:Vector, up:Vector}. At is a vector, not a point.
+// assumes 90 deg fov, places centered plane at distance of 1.
+// returns altered x and y coords in vertex array
+function projectPoly(poly,view) {
+    
+    var eyePointSlope; // slope eye to point
+    
+    var planeCenter = Vector.add(view.eye,Vector.normalize(view.at));
+    var planeD = -Vector.dot(view.at,planeCenter);
+    
+    for (var v=0; v<poly.length; v++) { // for each poly vertex
+        eyePointSlope = Vector.subtract(new Vector(poly[v].x,poly[v].y,poly[v].z),view.eye);
+        
+        // solve for x and y of ray plane intersect
+    } // end for each poly vertex
+} // end project poly
     
 
 /* main -- here is where execution begins after window load */
