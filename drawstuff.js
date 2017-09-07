@@ -193,7 +193,7 @@ function twoEdgeInterp(imagedata,e1,e2) {
     // fill ending endpoints of edges with overlapping shared Y range
     var endYDiff = e1[1].y - e2[1].y; 
     if (endYDiff > 0) { // e1 has largest max Y
-        var endAtT = -endYDiff/(e1[0].y - e2[1].y); // t at largest min Y
+        var endAtT = -endYDiff/(e1[0].y - e1[1].y); // t at largest min Y
         console.log(endAtT);
         e2new[1].x = e2[1].x; // set X at smallest max Y in e2
         e2new[1].y = e2[1].y; // set Y at smallest max Y in e2
