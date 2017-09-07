@@ -200,7 +200,7 @@ function twoEdgeInterp(imagedata,e1,e2) {
         e2new[1].c = e2[1].c.clone(); // set color at smallest max Y in e2
         e1new[1].x = e1[1].x + (e1[0].x-e1[1].x) * endAtT;
         e1new[1].y = e2new[1].y; // set Y at smallest max Y in e1
-        e1new[1].c = e1[0].c.clone().subtract(e1[1].scale(endAtT).add(e1[1].c);  // set color in e1
+        e1new[1].c = e1[0].c.clone().subtract(e1[1].c).scale(endAtT).add(e1[1].c);  // set color in e1
     } else { // end if e1 largest max Y, begin e2 largest max Y
         var endAtT = -endYDiff/(e1[0].y - e1[1].y); // t at largest min Y
         console.log(endAtT);
@@ -209,7 +209,7 @@ function twoEdgeInterp(imagedata,e1,e2) {
         e1new[1].c = e1[1].c.clone(); // set color at smallest max Y in e1
         e2new[1].x = e2[1].x + (e2[0].x-e2[1].x) * endAtT;
         e2new[1].y = e1new[1].y; // set Y at smallest max Y in e2
-        e2new[1].c = e2[0].c.clone(); e2new[1].c.subtract(e2[1].c); e2new[1].c.scale(endAtT); e2new[1].c.add(e2[1].c);  // set color in e1
+        e2new[1].c = e2[0].c.clone().subtract(e2[1].c).scale(endAtT).add(e2[1].c);  // set color in e1
     } // end if e2 largest max Y
     
     console.log(e1new[0].x +" "+ e1new[0].y +" "+ e1new[0].c.toString() +" "+ e1new[1].x +" "+ e1new[1].y +" "+ e1new[1].c.toString());
