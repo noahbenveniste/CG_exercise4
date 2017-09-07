@@ -159,8 +159,8 @@ function drawPixel(imagedata,x,y,color) {
 // vertex objects have this structure: {x:float,y:float,c:Color}
 function twoEdgeInterp(imagedata,e1,e2) {
     
-    console.log(e1[0].x +" "+ e1[0].y +" "+ e1[0].c.toString());
-    console.log(e2[1].x +" "+ e2[1].y +" "+ e2[1].c.toString());
+    console.log(e1[0].x +" "+ e1[0].y +" "+ e1[0].c.toString() +" "+ e1[1].x +" "+ e1[1].y +" "+ e1[1].c.toString());
+    console.log(e2[0].x +" "+ e2[0].y +" "+ e2[0].c.toString() +" "+ e2[1].x +" "+ e2[1].y +" "+ e2[1].c.toString());
     console.log(" ");
     
     // create edge arrays for overlapping shared Y range
@@ -204,8 +204,8 @@ function twoEdgeInterp(imagedata,e1,e2) {
         e2new[1].y = e1new[1].y; // set Y at smallest max Y in e2
     } // end if e2 largest max Y
     
-    console.log(e1new[0].x +" "+ e1new[0].y +" "+ e1new[0].c.toString());
-    console.log(e2new[1].x +" "+ e2new[1].y);
+    console.log(e1new[0].x +" "+ e1new[0].y +" "+ e1new[0].c.toString() +" "+ e1new[1].x +" "+ e1new[1].y);
+    console.log(e2new[0].x +" "+ e2new[0].y +" "+ e2new[0].c.toString() +" "+ e2new[1].x +" "+ e2new[1].y);
     console.log(" ");
 
     // determine which overlapping edge is left, which is right
@@ -227,8 +227,8 @@ function twoEdgeInterp(imagedata,e1,e2) {
         console.error(e); return;
     } // end catch
     
-    console.log(le[0].x +" "+ le[0].y +" "+ le[0].c.toString());
-    console.log(re[1].x +" "+ re[1].y);
+    console.log(le[0].x +" "+ le[0].y +" "+ le[0].c.toString() +" "+ le[1].x +" "+ le[1].y);
+    console.log(re[0].x +" "+ re[0].y +" "+ re[0].c.toString() +" "+ re[1].x +" "+ re[1].y);
     console.log(" ");
 
     // set up the vertical interpolation
