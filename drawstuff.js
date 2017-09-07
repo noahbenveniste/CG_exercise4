@@ -225,24 +225,26 @@ function twoEdgeInterp(imagedata,e1,e2) {
     var rcDelta = re[1].c.clone().subtract(re[0].c).scale(vDelta); // right vertical color delta
     var lxDelta = (le[1].x - le[0].x) * vDelta; // left vertical x delta
     var rxDelta = (re[1].x - re[0].x) * vDelta; // right vertical x delta
+    var lx = le[0].x, rx = re[0].x; // init left/right x coord
+    var lc = le[0].c.clone(), rc = re[0].c.clone(); // init left/right color
     
     // set up the horizontal interpolation
-    var hDelta = 1 / (rx-lx); // norm'd horizontal delta
+    var hDelta = 1 / (re[0].x-le[0].x); // norm'd horizontal delta
     var hc = new Color(); // horizontal color
     var hcDelta = new Color(); // horizontal color delta
     
     // do the interpolation
-    for (var y=startAtY; y<=haltAtY; y++) { // for each pixel row edges share
+    for (var y=le[0].y; y<=le[1].y; y++) { // for each pixel row edges share
         hc.copy(lc); // begin with the left color
         hcDelta.copy(rc).subtract(lc).scale(hDelta); // reset horiz color delta
         for (var x=Math.ceil(lx); x<=rx; x++) { // for each pixel in row
             drawPixel(imagedata,x,y,hc); // draw the color
             hc.add(hcDelta); // set next pixel color
         } // end horizontal
-        lc.add(lcDelta); // set next left edge color
-        rc.add(rcDelta); // set next right edge color
         lx += lxDelta; // set next left edge x coord
         rx += rxDelta; // set next right edge x coord
+        lc.add(lcDelta); // set next left edge color
+        rc.add(rcDelta); // set next right edge color
     } // end vertical
 } // end twoEdgeInterp
 
