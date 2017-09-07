@@ -201,7 +201,7 @@ function twoEdgeInterp(imagedata,e1,e2) {
         e1new[1].y = e2new[1].y; // set Y at smallest max Y in e1
         e1new[1].c = e1[0].c.clone().subtract(e1[1].c).scale(endAtT).add(e1[1].c);  // set color in e1
     } else { // end if e1 largest max Y, begin e2 largest max Y
-        var endAtT = -startYDiff/(e1[0].y - e1[1].y); // t at largest min Y
+        var endAtT = -endYDiff/(e1[0].y - e1[1].y); // t at largest min Y
         e1new[1].x = e1[1].x; // set X at smallest max Y in e1
         e1new[1].y = e1[1].y; // set Y at smallest max Y in e1
         e1new[1].c = e1[1].c.clone(); // set color at smallest max Y in e1
