@@ -228,7 +228,7 @@ function twoEdgeInterp(imagedata,e1,e2) {
     } // end catch
     
     console.log(le[0].x +" "+ le[0].y +" "+ le[0].c.toString());
-    console.log(re[1].x +" "+ re[1].y +" "+ re[1].c.toString());
+    console.log(re[1].x +" "+ re[1].y);
     console.log(" ");
 
     // set up the vertical interpolation
