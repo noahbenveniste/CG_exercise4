@@ -460,6 +460,7 @@ function projectPoly(poly,view) {
     var eyePointSlope; // slope eye to point
     var denom; // denom of pixel t
     var isectT; // pixel t
+    var isectXYZ; // pixel world xyz
     
     var planeCenter = Vector.add(view.eye,Vector.normalize(view.at));
     var planeD = -Vector.dot(view.at,planeCenter);
@@ -480,8 +481,9 @@ function projectPoly(poly,view) {
                 if (isecT < 1) // one vertex in front of plane
                     throw "one vertex in front of plane!";
                 else { // intersecton behind plane
-                    poly[v].x = ; // project onto planeX
-                    poly[v].y = ; // project onot planeY
+                    isectXYZ = Vector.add(view.eye,Vector.scale(isectT,view.at));
+                    poly[v].x = Vector.dot(planeX,Vector.subtract(isectXYZ,planeCenter)); // project onto planeX
+                    poly[v].y = Vector.dot(planeY,Vector.subtract(isectXYZ,planeCenter)); // project onto planeY
                 } // end if intersection behind plane
             } // end if intersects
         } // end try
