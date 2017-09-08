@@ -178,6 +178,25 @@ class Vector {
         }
     } // end dot static method
     
+    // static cross method
+    static cross(v1,v2) {
+        try {
+            if (!(v1 instanceof Vector) || !(v2 instanceof Vector))
+                throw "Vector.cross: non-vector parameter";
+            else {
+                var crossX = v1.y*v2.z - v1.z*v2.y;
+                var crossY = v1.z*v2.x - v1.x*v2.z;
+                var crossZ = v1.x*v2.y - v1.y*v2.x;
+                return(new Vector(crossX,crossY,crossZ));
+            } // endif vector params
+        } // end try
+        
+        catch(e) {
+            console.log(e);
+            return(NaN);
+        }
+    } // end dot static method
+    
     // static add method
     static add(v1,v2) {
         try {
@@ -439,14 +458,39 @@ function fillPoly(imagedata,vArray) {
 function projectPoly(poly,view) {
     
     var eyePointSlope; // slope eye to point
+    var denom; // denom of pixel t
+    var isectT; // pixel t
     
     var planeCenter = Vector.add(view.eye,Vector.normalize(view.at));
     var planeD = -Vector.dot(view.at,planeCenter);
+    var num = -Vector.dot(view.at,view.eye) - planeD; // num of pixel t
+    
+    var planeX = Vector.normalize(Vector.cross(view.at,view.up));
+    var planeY = Vector.normalize(Vector.cross(view.at,planeX));
     
     for (var v=0; v<poly.length; v++) { // for each poly vertex
         eyePointSlope = Vector.subtract(new Vector(poly[v].x,poly[v].y,poly[v].z),view.eye);
+        denom = Vector.dot(view.at,eyePointSlope);
         
-        // solve for x and y of ray plane intersect
+        try {
+            if (denom == 0) // no intersection
+                try "projectPoly: one vertex doesn't intersect!";
+            else { // intersection
+                isectT = num / denom;
+                if (isecT < 1) // one vertex in front of plane
+                    throw "one vertex in front of plane!";
+                else { // intersecton behind plane
+                    poly[v].x = ; // project onto planeX
+                    poly[v].y = ; // project onot planeY
+                } // end if intersection behind plane
+            } // end if intersects
+        } // end try
+        
+        catch (e) {
+            console.error(e);
+            poly = []; // no projected poly
+            break; 
+        } // end catch
     } // end for each poly vertex
 } // end project poly
     
