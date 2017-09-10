@@ -471,7 +471,7 @@ function projectPoly(poly,view) {
         
         try {
             if (denom == 0) // no intersection
-                try "projectPoly: one vertex doesn't intersect!";
+                throw "projectPoly: one vertex doesn't intersect!";
             else { // intersection
                 isectT = num / denom;
                 if (isecT < 1) // one vertex in front of plane
