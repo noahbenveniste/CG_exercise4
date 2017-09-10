@@ -464,6 +464,8 @@ function projectPoly(imagedata,poly,view) {
     var planeX = Vector.normalize(Vector.cross(view.at,view.up));
     var planeY = Vector.normalize(Vector.cross(view.at,planeX));
     
+    view.at.toConsole(); planeX.toConsole(); planeY.toConsole();
+    
     for (var v=0; v<poly.length; v++) { // for each poly vertex
         eyePointSlope = Vector.subtract(new Vector(poly[v].x,poly[v].y,poly[v].z),view.eye);
         denom = Vector.dot(view.at,eyePointSlope);
