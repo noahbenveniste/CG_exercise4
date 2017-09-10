@@ -451,7 +451,7 @@ function fillPoly(imagedata,vArray) {
 // at:Vector, up:Vector}. At is a vector, not a point.
 // assumes 90 deg fov, places centered plane at distance of 1.
 // returns altered x and y coords in vertex array
-function projectPoly(poly,view) {
+function projectPoly(imagedata,poly,view) {
     
     var eyePointSlope; // slope eye to point
     var denom; // denom of pixel t
@@ -510,7 +510,7 @@ function main() {
                 {x:-5,y:-5,z:10,c:new Color(0,0,0,255)}, {x:5,y:-5,z:10,c:new Color(0,0,255,255)}];
     
     // Define and render a rectangle in 2D with colors and coords at corners
-    projectPoly(imagedata,view,poly);
+    projectPoly(imagedata,poly,view);
     
     poly.forEach(function(v,i,a) {console.log("x:" +v.x+ " y:" +v.y);});
     
