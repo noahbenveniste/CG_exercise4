@@ -474,6 +474,7 @@ function projectPoly(imagedata,poly,view) {
                 throw "projectPoly: one vertex doesn't intersect!";
             else { // intersection
                 isectT = num / denom;
+                console.log("isectT: "+isectT);
                 if (isectT < 1) // one vertex in front of plane
                     throw "one vertex in front of plane!";
                 else { // intersecton behind plane
