@@ -299,10 +299,6 @@ function drawPixel(imagedata,x,y,color) {
 // vertex objects have this structure: {x:float,y:float,c:Color}
 function twoEdgeInterp(imagedata,e1,e2) {
     
-    console.log(e1[0].x +" "+ e1[0].y +" "+ e1[0].c.toString() +" "+ e1[1].x +" "+ e1[1].y +" "+ e1[1].c.toString());
-    console.log(e2[0].x +" "+ e2[0].y +" "+ e2[0].c.toString() +" "+ e2[1].x +" "+ e2[1].y +" "+ e2[1].c.toString());
-    console.log(" ");
-    
     // create edge arrays for overlapping shared Y range
     var e1new = [[],[]], e2new = [[],[]];
     
@@ -395,7 +391,7 @@ function twoEdgeInterp(imagedata,e1,e2) {
     } // end vertical
 } // end twoEdgeInterp
 
-// fills the passed convex polygon
+// fills the passed 2d convex polygon
 // expects an array of vertices, listed in clockwise order
 // vertex objects have this structure: {x:float,y:float,c:Color}
 function fillPoly(imagedata,vArray) {
@@ -507,11 +503,16 @@ function main() {
     var w = context.canvas.width; // as set in html
     var h = context.canvas.height;  // as set in html
     var imagedata = context.createImageData(w,h);
- 
+    
+    // define polygon and view
+    var view = [eye:new Vector(0,0,0), at:new Vector(0,0,10), up:new Vector(0,1,0)];
+    var poly = [{x:-5,y:5,z:10,c:new Color(255,0,0,255)}, {x:5,y:5,z:10,c:new Color(0,255,0,255)}, 
+                {x:-5,y:-5,z:10,c:new Color(0,0,0,255)}, {x:5,y:-5,z:10,c:new Color(0,0,255,255)}];
+    
     // Define and render a rectangle in 2D with colors and coords at corners
-    fillPoly(imagedata,
-        [{x:50,y:100,c:new Color(255,0,0,255)}, {x:200,y:50,c:new Color(0,255,0,255)}, 
-         {x:200,y:200,c:new Color(0,0,0,255)}, {x:50,y:150,c:new Color(0,0,255,255)}]);
+    projectPoly(imagedata,view,poly);
+    
+    poly.forEach(function(v,i,a) {console.log("x:" +v.x+ " y:" +v.y);});
     
     context.putImageData(imagedata, 0, 0); // display the image in the context
 }
