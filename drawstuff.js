@@ -454,9 +454,8 @@ function fillPoly(imagedata,vArray) {
 function projectPoly(imagedata,poly,view) {
     
     var eyePointSlope; // slope eye to point
-    var denom; // denom of pixel t
-    var isectT; // pixel t
-    var isectXYZ; // pixel world xyz
+    var denom, isectT; // denom of pixel t, t itself
+    var ctrToIsect; // pixel world xyz less plane center
     
     var planeCenter = Vector.add(view.eye,Vector.normalize(view.at));
     var planeD = -Vector.dot(view.at,planeCenter);
@@ -475,12 +474,12 @@ function projectPoly(imagedata,poly,view) {
             else { // intersection
                 isectT = num / denom;
                 console.log("isectT: "+isectT);
-                if (isectT < 1) // one vertex in front of plane
-                    throw "one vertex in front of plane!";
+                if (isectT < 0) // one vertex in front of plane
+                    throw "one vertex behind eye!";
                 else { // intersecton behind plane
-                    isectXYZ = Vector.add(view.eye,Vector.scale(isectT,view.at));
-                    poly[v].x = Vector.dot(planeX,Vector.subtract(isectXYZ,planeCenter)); // project onto planeX
-                    poly[v].y = Vector.dot(planeY,Vector.subtract(isectXYZ,planeCenter)); // project onto planeY
+                    ctrToIsect = Vector.subtract(Vector.add(view.eye,Vector.scale(isectT,view.at)),planeCenter);
+                    poly[v].x = Vector.dot(planeX,ctrToIsect); // project onto planeX
+                    poly[v].y = Vector.dot(planeY,ctrToIsect); // project onto planeY
                 } // end if intersection behind plane
             } // end if intersects
         } // end try
