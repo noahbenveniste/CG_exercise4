@@ -396,6 +396,10 @@ function twoEdgeInterp(imagedata,e1,e2) {
 // vertex objects have this structure: {x:float,y:float,c:Color}
 function fillPoly(imagedata,vArray) {
     
+    vArray.forEach(function(v,i,a) {
+        console.log("x:"+v.x+" y:"+v.y);
+    });
+    
     // sort the edges in the polygon by their min y coordinate
     // next remove any horizontal edges
     var minYList = vArray.map(function(vtx,idx,ary) { // create array of minY index pairs
