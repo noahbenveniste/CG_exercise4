@@ -479,7 +479,7 @@ function projectPoly(imagedata,poly,view) {
                 if (isectT < 0) // one vertex in front of plane
                     throw "one vertex behind eye!";
                 else { // intersecton behind plane
-                    ctrToIsect = Vector.subtract(Vector.add(view.eye,Vector.scale(isectT,view.at)),planeCenter);
+                    ctrToIsect = Vector.subtract(Vector.add(view.eye,Vector.scale(isectT,eyePointSlope)),planeCenter);
                     poly[v].x = Vector.dot(planeX,ctrToIsect); // project onto planeX
                     poly[v].y = Vector.dot(planeY,ctrToIsect); // project onto planeY
                     console.log("x:"+poly[v].x+" y:"+poly[v].y);
