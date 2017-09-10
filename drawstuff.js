@@ -159,7 +159,7 @@ class Vector {
         }
     }
     
-    toConsole(prefix) {
+    toConsole(prefix="") {
         console.log(prefix+"["+this.x+","+this.y+","+this.z+"]");
     } // end to console
     
@@ -461,10 +461,10 @@ function projectPoly(imagedata,poly,view) {
     var planeD = -Vector.dot(view.at,planeCenter);
     var num = -Vector.dot(view.at,view.eye) - planeD; // num of pixel t
     
-    var planeX = Vector.normalize(Vector.cross(view.at,view.up));
-    var planeY = Vector.normalize(Vector.cross(view.at,planeX));
+    var planeX = Vector.normalize(Vector.cross(view.up,view.at));
+    var planeY = Vector.normalize(Vector.cross(planeX,view.at));
     
-    view.at.toConsole(); planeX.toConsole(); planeY.toConsole();
+    view.at.toConsole("at"); planeX.toConsole("planeX"); planeY.toConsole("planeY");
     
     for (var v=0; v<poly.length; v++) { // for each poly vertex
         eyePointSlope = Vector.subtract(new Vector(poly[v].x,poly[v].y,poly[v].z),view.eye);
