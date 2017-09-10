@@ -464,6 +464,8 @@ function projectPoly(imagedata,poly,view) {
     var planeX = Vector.normalize(Vector.cross(view.up,view.at));
     var planeY = Vector.normalize(Vector.cross(planeX,view.at));
     
+    var w=imagedata.width, h=imagedata.height; // viewport size
+    
     view.at.toConsole("at"); planeX.toConsole("planeX"); planeY.toConsole("planeY");
     
     for (var v=0; v<poly.length; v++) { // for each poly vertex
@@ -476,13 +478,14 @@ function projectPoly(imagedata,poly,view) {
             else { // intersection
                 isectT = num / denom;
                 console.log("isectT: "+isectT);
-                if (isectT < 0) // one vertex in front of plane
+                if (isectT < 0) // one vertex behind eye
                     throw "one vertex behind eye!";
-                else { // intersecton behind plane
+                else { // intersecton in front of eye
                     ctrToIsect = Vector.subtract(Vector.add(view.eye,Vector.scale(isectT,eyePointSlope)),planeCenter);
-                    poly[v].x = Vector.dot(planeX,ctrToIsect); // project onto planeX
-                    poly[v].y = Vector.dot(planeY,ctrToIsect); // project onto planeY
+                    poly[v].x = Vector.dot(planeX,ctrToIsect)*w/2 + w/2; // project and viewport transform
+                    poly[v].y = Vector.dot(planeY,ctrToIsect)*h/2 + h/2; // project onto planeY
                     console.log("x:"+poly[v].x+" y:"+poly[v].y);
+                    
                 } // end if intersection behind plane
             } // end if intersects
         } // end try
@@ -514,6 +517,7 @@ function main() {
     
     // Define and render a rectangle in 2D with colors and coords at corners
     projectPoly(imagedata,poly,view);
+    fillPoly(imagedata,poly);
     
     poly.forEach(function(v,i,a) {console.log("x:" +v.x+ " y:" +v.y);});
     
