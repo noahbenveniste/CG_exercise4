@@ -513,7 +513,7 @@ function main() {
     // define polygon and view
     var view = {eye:new Vector(0,0,0), at:new Vector(0,0,10), up:new Vector(0,1,0)};
     var poly = [{x:-5,y:5,z:10,c:new Color(255,0,0,255)}, {x:5,y:5,z:10,c:new Color(0,255,0,255)}, 
-                {x:-5,y:-5,z:10,c:new Color(0,0,0,255)}, {x:5,y:-5,z:10,c:new Color(0,0,255,255)}];
+                {x:5,y:-5,z:10,c:new Color(0,0,0,255)}, {x:-5,y:-5,z:10,c:new Color(0,0,255,255)}];
     
     // Define and render a rectangle in 2D with colors and coords at corners
     projectPoly(imagedata,poly,view);
