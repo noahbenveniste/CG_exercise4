@@ -480,6 +480,7 @@ function projectPoly(imagedata,poly,view) {
                     ctrToIsect = Vector.subtract(Vector.add(view.eye,Vector.scale(isectT,view.at)),planeCenter);
                     poly[v].x = Vector.dot(planeX,ctrToIsect); // project onto planeX
                     poly[v].y = Vector.dot(planeY,ctrToIsect); // project onto planeY
+                    console.log("x:"+poly[v].x+" y:"+poly[v].y);
                 } // end if intersection behind plane
             } // end if intersects
         } // end try
