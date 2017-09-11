@@ -299,6 +299,9 @@ function drawPixel(imagedata,x,y,color) {
 // vertex objects have this structure: {x:float,y:float,c:Color}
 function twoEdgeInterp(imagedata,e1,e2) {
     
+    console.log("x: " +e1[0].x+ " y:" +e1[0].y+ " to x:" +e1[1].x+ " y:" +e1[1].y);
+    console.log("x: " +e2[0].x+ " y:" +e2[0].y+ " to x:" +e2[1].x+ " y:" +e2[1].y);
+    
     // create edge arrays for overlapping shared Y range
     var e1new = [[],[]], e2new = [[],[]];
     
