@@ -281,6 +281,7 @@ function drawPixel(imagedata,x,y,color) {
             imagedata.data[pixelindex+1] = color.g;
             imagedata.data[pixelindex+2] = color.b;
             imagedata.data[pixelindex+3] = color.a;
+            console.log("x:" +x+ " y:" +y);
         } else 
             throw "drawpixel color is not a Color";
     } // end try
