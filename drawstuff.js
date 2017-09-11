@@ -355,8 +355,8 @@ function twoEdgeInterp(imagedata,e1,e2) {
     // determine which overlapping edge is left, which is right
     try {
         const closeEnough = 0.000000001; // a billionth
-        var startXComp = e1new[0].x-e2new[0].x; startXComp = startXComp > closeEnough ? startXComp : 0; 
-        var endXComp = e1new[1].x-e2new[1].x; endXComp = endXComp > closeEnough ? endXComp : 0;
+        var startXComp = e1new[0].x-e2new[0].x; startXComp == startXComp > closeEnough ? startXComp : 0; 
+        var endXComp = e1new[1].x-e2new[1].x; endXComp == endXComp > closeEnough ? endXComp : 0;
         switch(Math.sign(startXComp) + Math.sign(endXComp)) {
             case -2: // both e1 endpoints are left of e2
             case -1: // one e1 endpoint left of e2 (other at same loc)
