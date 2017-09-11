@@ -359,10 +359,10 @@ function twoEdgeInterp(imagedata,e1,e2) {
     try {
         const closeEnough = 0.000000001; // a billionth
         var startXComp = e1new[0].x-e2new[0].x; 
-        startXComp = (startXComp > closeEnough) ? startXComp : 0; 
+        startXComp = (Math.abs(startXComp) > closeEnough) ? startXComp : 0; 
         var endXComp = e1new[1].x-e2new[1].x; 
-        endXComp = (endXComp > closeEnough) ? endXComp : 0;
-        console.log("start:" +startXComp+ "end:" +endXComp);
+        endXComp = (Math.abs(endXComp) > closeEnough) ? endXComp : 0;
+        console.log("start:" +startXComp+ " end:" +endXComp);
         
         switch(Math.sign(startXComp) + Math.sign(endXComp)) {
             case -2: // both e1 endpoints are left of e2
