@@ -483,6 +483,7 @@ function projectPoly(imagedata,poly,view) {
         eyePointSlope = Vector.subtract(new Vector(poly[v].x,poly[v].y,poly[v].z),view.eye);
         eyePointSlope.toConsole("delta: ");
         denom = Vector.dot(view.at,eyePointSlope);
+        console.log("denom: " + denom);
         
         try {
             if (denom == 0) // no intersection
