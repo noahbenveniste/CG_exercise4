@@ -481,7 +481,7 @@ function projectPoly(imagedata,poly,view) {
     
     for (var v=0; v<poly.length; v++) { // for each poly vertex
         eyePointSlope = Vector.subtract(new Vector(poly[v].x,poly[v].y,poly[v].z),view.eye);
-        console.log("delta: "+eyePointSlope);
+        eyePointSlope.toConsole("delta: ");
         denom = Vector.dot(view.at,eyePointSlope);
         
         try {
