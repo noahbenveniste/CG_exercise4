@@ -271,8 +271,6 @@ class Vector {
 // draw a pixel at x,y using color
 function drawPixel(imagedata,x,y,color) {
     
-    drawPixel.numExcepts = (drawPixel.numExcepts == "undefined") ? 0 : drawPixel.numExcepts;
-    
     try {
         if ((typeof(x) !== "number") || (typeof(y) !== "number"))
             throw "drawpixel location not a number";
@@ -289,6 +287,7 @@ function drawPixel(imagedata,x,y,color) {
     } // end try
     
     catch(e) {
+        drawPixel.numExcepts = (drawPixel.numExcepts == "undefined") ? 0 : drawPixel.numExcepts;
         if (drawPixel.numExcepts++ < 10)
             console.log(e);
     }
@@ -523,7 +522,8 @@ function main() {
     var imagedata = context.createImageData(w,h);
     
     // define polygon and view
-    var view = {eye:new Vector(0,-10,0), at:new Vector(0,0,10), up:new Vector(0,1,0)};
+    var testEye = new Vector(0,-10,0);
+    var view = {eye:testEye, at:Vector.subtract(new Vector(0,10,0),testEye), up:new Vector(0,1,0)};
     var poly = [{x:-5,y:5,z:10,c:new Color(255,0,0,255)}, {x:5,y:5,z:10,c:new Color(0,255,0,255)}, 
                 {x:5,y:-5,z:10,c:new Color(0,0,0,255)}, {x:-5,y:-5,z:10,c:new Color(0,0,255,255)}];
     
