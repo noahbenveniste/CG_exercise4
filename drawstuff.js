@@ -352,8 +352,8 @@ function twoEdgeInterp(imagedata,e1,e2) {
         e2new[1].c = e2[0].c.clone().subtract(e2[1].c).scale(endAtT).add(e2[1].c);  // set color in e2
     } // end if e2 largest max Y
     
-    console.log("x: " +e1new[0].x+ " y:" +e1new[0].y+ " to x:" +e1new[1].x+ " y:" +e1new[1].y);
-    console.log("x: " +e2new[0].x+ " y:" +e2new[0].y+ " to x:" +e2new[1].x+ " y:" +e2new[1].y);
+    console.log("new x: " +e1new[0].x+ " y:" +e1new[0].y+ " to x:" +e1new[1].x+ " y:" +e1new[1].y);
+    console.log("new x: " +e2new[0].x+ " y:" +e2new[0].y+ " to x:" +e2new[1].x+ " y:" +e2new[1].y);
         
     // determine which overlapping edge is left, which is right
     try {
