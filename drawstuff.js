@@ -270,6 +270,9 @@ class Vector {
 
 // draw a pixel at x,y using color
 function drawPixel(imagedata,x,y,color) {
+    
+    drawPixel.numExcepts = (drawPixel.numExcepts == "undefined") ? 0 : drawPixel.numExcepts;
+    
     try {
         if ((typeof(x) !== "number") || (typeof(y) !== "number"))
             throw "drawpixel location not a number";
@@ -286,7 +289,8 @@ function drawPixel(imagedata,x,y,color) {
     } // end try
     
     catch(e) {
-        console.log(e);
+        if (drawPixel.numExcepts++ < 10)
+            console.log(e);
     }
 } // end drawPixel
 
@@ -477,6 +481,7 @@ function projectPoly(imagedata,poly,view) {
     
     for (var v=0; v<poly.length; v++) { // for each poly vertex
         eyePointSlope = Vector.subtract(new Vector(poly[v].x,poly[v].y,poly[v].z),view.eye);
+        console.log("delta: "+eyePointSlope);
         denom = Vector.dot(view.at,eyePointSlope);
         
         try {
