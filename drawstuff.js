@@ -413,7 +413,7 @@ function twoEdgeInterp(imagedata,e1,e2) {
 function fillPoly(imagedata,vArray) {
     
     vArray.forEach(function(v,i,a) {
-        console.log("x:"+v.x+" y:"+v.y);
+        console.log("in fillPolly: x:"+v.x+" y:"+v.y);
     });
     
     // sort the edges in the polygon by their min y coordinate
