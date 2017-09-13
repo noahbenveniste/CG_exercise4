@@ -219,7 +219,6 @@ class Vector {
                 throw "Vector.subtract: non-vector parameter";
             else {
                 var v = new Vector(v1.x-v2.x,v1.y-v2.y,v1.z-v2.z);
-                //v.toConsole("Vector.subtract: ");
                 return(v);
             }
         } // end try
@@ -302,9 +301,6 @@ function drawPixel(imagedata,x,y,color) {
 // vertex objects have this structure: {x:float,y:float,c:Color}
 function twoEdgeInterp(imagedata,e1,e2) {
     
-    console.log("x: " +e1[0].x+ " y:" +e1[0].y+ " to x:" +e1[1].x+ " y:" +e1[1].y);
-    console.log("x: " +e2[0].x+ " y:" +e2[0].y+ " to x:" +e2[1].x+ " y:" +e2[1].y);
-    
     // create edge arrays for overlapping shared Y range
     var e1new = [[],[]], e2new = [[],[]];
     
@@ -352,9 +348,6 @@ function twoEdgeInterp(imagedata,e1,e2) {
         e2new[1].c = e2[0].c.clone().subtract(e2[1].c).scale(endAtT).add(e2[1].c);  // set color in e2
     } // end if e2 largest max Y
     
-    console.log("new x: " +e1new[0].x+ " y:" +e1new[0].y+ " to x:" +e1new[1].x+ " y:" +e1new[1].y);
-    console.log("new x: " +e2new[0].x+ " y:" +e2new[0].y+ " to x:" +e2new[1].x+ " y:" +e2new[1].y);
-        
     // determine which overlapping edge is left, which is right
     try {
         const closeEnough = 0.000000001; // a billionth
@@ -362,7 +355,6 @@ function twoEdgeInterp(imagedata,e1,e2) {
         startXComp = (Math.abs(startXComp) > closeEnough) ? startXComp : 0; 
         var endXComp = e1new[1].x-e2new[1].x; 
         endXComp = (Math.abs(endXComp) > closeEnough) ? endXComp : 0;
-        console.log("start:" +startXComp+ " end:" +endXComp);
         
         switch(Math.sign(startXComp) + Math.sign(endXComp)) {
             case -2: // both e1 endpoints are left of e2
@@ -411,10 +403,6 @@ function twoEdgeInterp(imagedata,e1,e2) {
 // expects an array of vertices, listed in clockwise order
 // vertex objects have this structure: {x:float,y:float,c:Color}
 function fillPoly(imagedata,vArray) {
-    
-    vArray.forEach(function(v,i,a) {
-        console.log("in fillPolly: x:"+v.x+" y:"+v.y);
-    });
     
     // sort the edges in the polygon by their min y coordinate
     // next remove any horizontal edges
@@ -486,27 +474,21 @@ function projectPoly(imagedata,poly,view) {
     
     var w=imagedata.width, h=imagedata.height; // viewport size
     
-    view.at.toConsole("at"); planeX.toConsole("planeX"); planeY.toConsole("planeY");
-    
     for (var v=0; v<poly.length; v++) { // for each poly vertex
         eyePointSlope = Vector.subtract(new Vector(poly[v].x,poly[v].y,poly[v].z),view.eye);
-        eyePointSlope.toConsole("delta: ");
         denom = Vector.dot(view.at,eyePointSlope);
-        console.log("denom: " + denom);
         
         try {
             if (denom == 0) // no intersection
                 throw "projectPoly: one vertex doesn't intersect!";
             else { // intersection
                 isectT = num / denom;
-                console.log("isectT: "+isectT);
                 if (isectT < 0) // one vertex behind eye
                     throw "one vertex behind eye!";
                 else { // intersecton in front of eye
                     ctrToIsect = Vector.subtract(Vector.add(view.eye,Vector.scale(isectT,eyePointSlope)),planeCenter);
                     poly[v].x = Vector.dot(planeX,ctrToIsect)*w/2 + w/2; // project and viewport transform
                     poly[v].y = Vector.dot(planeY,ctrToIsect)*h/2 + h/2; // project onto planeY
-                    console.log("x:"+poly[v].x+" y:"+poly[v].y);
                 } // end if intersection behind plane
             } // end if intersects
         } // end try
@@ -532,7 +514,7 @@ function main() {
     var imagedata = context.createImageData(w,h);
     
     // define polygon and view
-    var testEye = new Vector(10,0,10);
+    var testEye = new Vector(-5,5,10);
     var testAt = Vector.subtract(new Vector(0,0,10),testEye);
     var view = {eye:testEye, at:testAt, up:new Vector(0,1,0)};
     var poly = [{x:-5,y:5,z:10,c:new Color(255,0,0,255)}, {x:5,y:5,z:10,c:new Color(0,255,0,255)}, 
@@ -541,8 +523,6 @@ function main() {
     // Define and render a rectangle in 2D with colors and coords at corners
     projectPoly(imagedata,poly,view);
     fillPoly(imagedata,poly);
-    
-    poly.forEach(function(v,i,a) {console.log("x:" +v.x+ " y:" +v.y);});
     
     context.putImageData(imagedata, 0, 0); // display the image in the context
 }
