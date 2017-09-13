@@ -312,11 +312,11 @@ function twoEdgeInterp(imagedata,e1,e2) {
     e1 = (e1[0].y < e1[1].y) ? e1 : e1.reverse(); 
     e2 = (e2[0].y < e2[1].y) ? e2 : e2.reverse(); 
     
-    // fill starting endpoints of edges with overlapping shared Y range
+    // find starting endpoints of edges with overlapping shared Y range
     var startYDiff = e1[0].y - e2[0].y;
     if (startYDiff > 0) { // e1 has largest min Y
         var startAtT = startYDiff/(e2[1].y - e2[0].y); // t at largest min Y
-        e1new[0].x = Math.ceil(e1[0].x); // set X at largest min Y in overlapping e1
+        e1new[0].x = e1[0].x; // set X at largest min Y in overlapping e1
         e1new[0].y = Math.ceil(e1[0].y); // set Y at largest min Y in overlapping e1
         e1new[0].c = e1[0].c.clone();  // set color at largest min Y in overlapping e1
         e2new[0].x = e2[0].x + (e2[1].x-e2[0].x) * startAtT; // set X in e2
@@ -324,7 +324,7 @@ function twoEdgeInterp(imagedata,e1,e2) {
         e2new[0].c = e2[1].c.clone().subtract(e2[0].c).scale(startAtT).add(e2[0].c);  // set color in e2
     } else { // end if e1 largest min Y, begin e2 largest min Y
         var startAtT = -startYDiff/(e1[1].y - e1[0].y); // t at largest min Y
-        e2new[0].x = Math.ceil(e2[0].x); // set X at largest min Y in overlapping e2
+        e2new[0].x = e2[0].x; // set X at largest min Y in overlapping e2
         e2new[0].y = Math.ceil(e2[0].y); // set Y at largest min Y in overlapping e2
         e2new[0].c = e2[0].c.clone();  // set color at largest min Y in overlapping e2
         e1new[0].x = e1[0].x + (e1[1].x-e1[0].x) * startAtT; // set X in e1
@@ -332,7 +332,7 @@ function twoEdgeInterp(imagedata,e1,e2) {
         e1new[0].c = e1[1].c.clone().subtract(e1[0].c).scale(startAtT).add(e1[0].c);  // set color in e1
     } // end if e2 has largest min Y
     
-    // fill ending endpoints of edges with overlapping shared Y range
+    // find ending endpoints of edges with overlapping shared Y range
     var endYDiff = e1[1].y - e2[1].y; 
     if (endYDiff > 0) { // e1 has largest max Y
         var endAtT = -endYDiff/(e1[0].y - e1[1].y); // t at largest min Y
