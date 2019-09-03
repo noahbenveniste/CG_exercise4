@@ -504,6 +504,8 @@ function projectPoly(imagedata,poly,view) {
 
 /* main -- here is where execution begins after window load */
 
+//
+
 function main() {
 
     // Get the canvas, context, and image data
