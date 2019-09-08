@@ -514,8 +514,8 @@ function main() {
     var imagedata = context.createImageData(w,h);
     
     // define polygon and view
-    var testEye = new Vector(-5,3,0);
-    //var testEye = new Vector(0,0,0);
+    //var testEye = new Vector(-5,3,0);
+    var testEye = new Vector(0,0,0);
     var testAt = Vector.subtract(new Vector(0,0,10),testEye);
     // var view = {eye:testEye, at:testAt, up:new Vector(0,1,0)};
     var view = {eye:testEye, at:testAt, up:new Vector(0,1,0)};
